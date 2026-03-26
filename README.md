@@ -1,36 +1,43 @@
-# Tapeworm — AI Audition Assistant
+# 🪱 Tapeworm - Audition Assistant
 
-An AI-powered audition rehearsal tool for actors. Upload your script, pick your character, and practice your lines with intelligent feedback.
+Your parasitic audition assistant — feeds on your success.
+
+A lightweight, browser-based audition prep tool for actors. Upload your script, set your background, and practice your lines with professional lighting controls.
 
 ## Features
 
-- 📖 **Script Upload** — TXT, DOCX, or PDF format
-- 🎬 **Live Camera Feed** — Built-in video recording
-- 🎙️ **Voice Character Selection** — Speak your character name
-- 🎨 **Virtual Backgrounds** — 5 solid color options (off, dark grey, black, white, blue)
-- 💡 **Lighting Controls** — Adjust brightness, contrast, saturation
-- ▶️ **Playback Controls** — Play, skip, replay lines
-- 🔌 **API Integration** — Optional ElevenLabs (voice) and Nano Banana (AI) keys
+✅ **Script Management** - Upload and organize your audition lines by character  
+✅ **Professional Backgrounds** - 5 solid color options (dark grey, black, white, blue, wood)  
+✅ **Lighting Control** - Adjust brightness for realistic audition conditions  
+✅ **Line Tracking** - See all your lines at a glance with time estimates  
+✅ **Zero Setup** - Works in any browser, no account required  
+✅ **Dark Mode** - Easy on the eyes during long rehearsal sessions  
 
 ## Quick Start
 
-1. Open `index.html` in a modern browser
-2. Upload your script
-3. Select/speak your character name
-4. Click "Start Audition"
-5. Use playback controls to practice
+1. Visit **[tapeworm.today](https://tapeworm.today)**
+2. Enter your character name
+3. Paste your audition lines
+4. Choose your background
+5. Practice!
 
-## Keyboard Shortcuts
+## How It Works
 
-- **Space** — Play current line
-- **→** — Skip to next line
-- **R** — Replay previous line
+Tapeworm is a pure HTML5 app with no backend. Everything happens in your browser:
 
-## API Keys (Optional)
+- Lines are stored in your browser's memory (refresh clears them)
+- Backgrounds are real-time CSS gradients
+- Lighting adjustments use CSS filters
+- No data is sent anywhere
 
-- **ElevenLabs** — For AI voice playback of other characters
-- **Nano Banana** — For advanced background effects (coming soon)
+## Built For Actors
 
-## License
+Whether you're prepping for a tape audition, callback, or self-tape, Tapeworm gives you a focused space to practice with professional lighting controls.
 
-MIT
+## Why "Tapeworm"?
+
+Because a tapeworm is a parasite that feeds on its host. In your audition, the character feeds on your performance — and we're here to help that relationship thrive.
+
+---
+
+Made with ❤️ for actors grinding the audition game.
