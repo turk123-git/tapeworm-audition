@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tapeworm - Audition Assistant</title>
+    <title>Tapeworm — AI Audition Assistant</title>
     <style>
         * {
             margin: 0;
@@ -12,274 +12,272 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #0a0e27;
             color: #fff;
+            overflow: hidden;
         }
 
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        header {
-            text-align: center;
-            padding: 40px 0;
-            border-bottom: 1px solid #333;
-        }
-
-        header h1 {
-            font-size: 48px;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #ff006e, #fb5607);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        header p {
-            color: #aaa;
-            font-size: 16px;
-        }
-
-        .tabs {
             display: flex;
-            gap: 10px;
-            margin: 30px 0;
-            border-bottom: 1px solid #333;
-        }
-
-        .tab-button {
-            padding: 12px 24px;
-            background: none;
-            border: none;
-            color: #aaa;
-            cursor: pointer;
-            font-size: 16px;
-            border-bottom: 3px solid transparent;
-            transition: all 0.3s;
-        }
-
-        .tab-button.active {
-            color: #fff;
-            border-bottom-color: #ff006e;
-        }
-
-        .tab-button:hover {
-            color: #fff;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        /* Script Tab */
-        .upload-area {
-            border: 2px dashed #444;
-            border-radius: 12px;
-            padding: 40px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-bottom: 30px;
-        }
-
-        .upload-area:hover {
-            border-color: #ff006e;
-            background: rgba(255, 0, 110, 0.05);
-        }
-
-        .upload-area.dragover {
-            border-color: #ff006e;
-            background: rgba(255, 0, 110, 0.1);
-        }
-
-        .upload-area input {
-            display: none;
-        }
-
-        .script-info {
-            background: #1a1f3a;
+            height: 100vh;
+            gap: 20px;
             padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+        }
+
+        /* Setup Wizard */
+        .setup-wizard {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            gap: 30px;
+        }
+
+        .setup-wizard.hidden {
             display: none;
         }
 
-        .script-info.show {
-            display: block;
+        .wizard-header {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
         }
 
-        .character-select {
+        .wizard-subtitle {
+            font-size: 1.1rem;
+            color: #aaa;
+            max-width: 400px;
+        }
+
+        .wizard-section {
+            width: 100%;
+            max-width: 500px;
             margin: 20px 0;
         }
 
-        .character-select label {
-            display: block;
+        .wizard-label {
+            font-size: 1rem;
             margin-bottom: 10px;
-            font-weight: 600;
+            text-align: left;
+            color: #ccc;
         }
 
-        .character-select input {
+        .wizard-input {
             width: 100%;
             padding: 12px;
-            background: #1a1f3a;
-            border: 1px solid #444;
-            border-radius: 6px;
-            color: #fff;
-            font-size: 16px;
-        }
-
-        .character-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .character-btn {
-            padding: 10px;
-            background: #1a1f3a;
             border: 2px solid #444;
-            border-radius: 6px;
-            color: #aaa;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 14px;
-        }
-
-        .character-btn:hover {
-            border-color: #ff006e;
+            border-radius: 8px;
+            background: #1a1f3a;
             color: #fff;
+            font-size: 1rem;
+            margin-bottom: 10px;
         }
 
-        .character-btn.selected {
-            background: #ff006e;
-            border-color: #ff006e;
-            color: #fff;
+        .wizard-input:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
         }
 
-        .start-btn {
+        .wizard-button {
             width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, #ff006e, #fb5607);
+            padding: 12px;
+            background: linear-gradient(135deg, #00d4ff, #0099ff);
             border: none;
             border-radius: 8px;
             color: #fff;
-            font-size: 18px;
-            font-weight: 600;
+            font-size: 1rem;
+            font-weight: bold;
             cursor: pointer;
-            margin-top: 20px;
             transition: all 0.3s;
         }
 
-        .start-btn:hover {
+        .wizard-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(255, 0, 110, 0.3);
+            box-shadow: 0 8px 20px rgba(0, 212, 255, 0.4);
         }
 
-        .start-btn:disabled {
+        .wizard-button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
 
-        /* Audition Tab */
-        .audition-container {
+        /* Audition View */
+        .audition-view {
+            flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
         }
 
-        .background-controls {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+        .audition-view.hidden {
+            display: none;
         }
 
-        .bg-swatch {
-            width: 50px;
-            height: 50px;
-            border-radius: 8px;
-            cursor: pointer;
-            border: 3px solid transparent;
-            transition: all 0.3s;
-            position: relative;
-        }
-
-        .bg-swatch:hover {
-            transform: scale(1.1);
-        }
-
-        .bg-swatch.active {
-            border-color: #fff;
-            box-shadow: 0 0 20px currentColor;
-        }
-
-        .bg-swatch[data-color="off"] {
-            background: linear-gradient(135deg, #333, #555);
-        }
-
-        .bg-swatch[data-color="darkgrey"] {
-            background: #333333;
-        }
-
-        .bg-swatch[data-color="black"] {
-            background: #000000;
-        }
-
-        .bg-swatch[data-color="white"] {
-            background: #ffffff;
-        }
-
-        .bg-swatch[data-color="blue"] {
-            background: #1e3a8a;
-        }
-
-        .slider-group {
-            background: #1a1f3a;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-
-        .slider-group h3 {
-            margin-bottom: 15px;
-            font-size: 14px;
-            color: #aaa;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .slider-item {
-            margin-bottom: 15px;
-        }
-
-        .slider-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .slider-label {
+        .audition-header {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 14px;
+            align-items: center;
+            padding: 15px;
+            background: #1a1f3a;
+            border-radius: 8px;
         }
 
-        .slider-label span:first-child {
-            font-weight: 600;
+        .audition-title {
+            font-size: 1.3rem;
+            font-weight: bold;
         }
 
-        .slider-label span:last-child {
-            color: #ff006e;
+        .audition-character {
+            color: #00d4ff;
+            font-size: 0.9rem;
         }
 
-        input[type="range"] {
+        .audition-reset {
+            padding: 8px 16px;
+            background: #ff6b6b;
+            border: none;
+            border-radius: 6px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .audition-reset:hover {
+            background: #ff5252;
+        }
+
+        /* Stage Area */
+        .stage-area {
+            flex: 1;
+            display: flex;
+            gap: 15px;
+        }
+
+        .stage {
+            flex: 1;
+            background: #1a1f3a;
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .stage-title {
+            font-size: 1rem;
+            color: #00d4ff;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .stage-content {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .stage-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .stage-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .stage-content::-webkit-scrollbar-thumb {
+            background: rgba(0, 212, 255, 0.3);
+            border-radius: 10px;
+        }
+
+        .line {
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            border-left: 4px solid #444;
+            background: rgba(255, 255, 255, 0.05);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .line.character {
+            border-left-color: #00d4ff;
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        .line.current {
+            border-left-color: #00ff00;
+            background: rgba(0, 255, 0, 0.15);
+            font-weight: bold;
+        }
+
+        .line.done {
+            opacity: 0.5;
+            border-left-color: #666;
+        }
+
+        .line-text {
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .line-speaker {
+            font-size: 0.85rem;
+            color: #00d4ff;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        /* Camera Feed with PiP */
+        .camera-container {
+            width: 350px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .camera-feed {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 9/16;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #00d4ff;
+        }
+
+        #videoFeed {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1);
+        }
+
+        .camera-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .control-group {
+            background: #1a1f3a;
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .control-label {
+            font-size: 0.85rem;
+            color: #aaa;
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .slider {
             width: 100%;
             height: 6px;
             border-radius: 3px;
@@ -288,637 +286,578 @@
             -webkit-appearance: none;
         }
 
-        input[type="range"]::-webkit-slider-thumb {
+        .slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
-            background: #ff006e;
+            background: #00d4ff;
             cursor: pointer;
-            box-shadow: 0 0 10px rgba(255, 0, 110, 0.5);
+            box-shadow: 0 0 8px rgba(0, 212, 255, 0.5);
         }
 
-        input[type="range"]::-moz-range-thumb {
-            width: 18px;
-            height: 18px;
+        .slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
-            background: #ff006e;
+            background: #00d4ff;
             cursor: pointer;
             border: none;
-            box-shadow: 0 0 10px rgba(255, 0, 110, 0.5);
         }
 
-        .stage {
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            background: #000;
-            border-radius: 12px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+        .bg-swatches {
             display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        #stageCanvas {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-
-        .stage-text {
-            position: absolute;
-            color: #fff;
-            text-align: center;
-            font-size: 24px;
-            pointer-events: none;
-        }
-
-        .stage-text.speaker {
-            color: #aaa;
-            font-size: 14px;
-            top: 20px;
-        }
-
-        .stage-text.dialogue {
-            font-size: 32px;
-            font-weight: 600;
-            max-width: 80%;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
-        }
-
-        .stage-text.your-line {
-            color: #22c55e;
-        }
-
-        .stage-text.ai-line {
-            color: #3b82f6;
-        }
-
-        .controls {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-            justify-content: center;
-        }
-
-        .control-btn {
-            padding: 12px 24px;
-            background: #1a1f3a;
-            border: 2px solid #444;
-            border-radius: 6px;
-            color: #fff;
-            cursor: pointer;
-            font-size: 16px;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
             gap: 8px;
+            flex-wrap: wrap;
         }
 
-        .control-btn:hover {
-            border-color: #ff006e;
-            color: #ff006e;
+        .swatch {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
         }
 
-        .control-btn.primary {
-            background: linear-gradient(135deg, #ff006e, #fb5607);
-            border: none;
-            color: #fff;
+        .swatch:hover {
+            transform: scale(1.1);
         }
 
-        .control-btn.primary:hover {
-            color: #fff;
-            box-shadow: 0 10px 30px rgba(255, 0, 110, 0.3);
+        .swatch.active {
+            border-color: #fff;
+            box-shadow: 0 0 12px rgba(0, 212, 255, 0.6);
         }
 
-        .settings-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
+        .swatch-off {
+            background: linear-gradient(45deg, #ff0000, #ff0000);
+            position: relative;
         }
 
-        .setting-box {
+        .swatch-off::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(45deg);
+            width: 50%;
+            height: 3px;
+            background: #fff;
+        }
+
+        .swatch-darkgrey {
+            background: #333333;
+        }
+
+        .swatch-black {
+            background: #000000;
+            border-color: #666;
+        }
+
+        .swatch-white {
+            background: #ffffff;
+            border-color: #666;
+        }
+
+        .swatch-blue {
+            background: #1e3a8a;
+        }
+
+        /* Playback Controls */
+        .playback-controls {
+            display: flex;
+            gap: 8px;
             background: #1a1f3a;
-            padding: 20px;
+            padding: 12px;
             border-radius: 8px;
         }
 
-        .setting-box label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-
-        .setting-box input,
-        .setting-box textarea {
-            width: 100%;
+        .control-btn {
+            flex: 1;
             padding: 10px;
-            background: #0a0e27;
-            border: 1px solid #444;
+            background: #00d4ff;
+            border: none;
             border-radius: 6px;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .control-btn:hover {
+            background: #00b8d4;
+            transform: translateY(-2px);
+        }
+
+        .control-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .control-btn.secondary {
+            background: #333;
             color: #fff;
-            font-family: monospace;
-            font-size: 12px;
         }
 
-        .setting-box textarea {
-            min-height: 80px;
-            resize: vertical;
+        .control-btn.secondary:hover {
+            background: #444;
         }
 
-        .setting-box input:focus,
-        .setting-box textarea:focus {
-            outline: none;
-            border-color: #ff006e;
+        .playback-status {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #aaa;
+            padding: 10px;
         }
 
-        .status {
-            padding: 12px;
-            background: #1a1f3a;
-            border-radius: 6px;
-            font-size: 12px;
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 20px;
             color: #aaa;
         }
 
-        .status.error {
-            color: #ff6b6b;
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #333;
+            border-top-color: #00d4ff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
         }
 
-        .status.success {
-            color: #22c55e;
-        }
-
-        @media (max-width: 768px) {
-            .tabs {
-                flex-wrap: wrap;
-            }
-
-            .stage {
-                aspect-ratio: 9 / 16;
-            }
-
-            .controls {
-                flex-direction: column;
-            }
-
-            .control-btn {
-                width: 100%;
-            }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>🪱 Tapeworm</h1>
-            <p>Your AI Audition Partner</p>
-        </header>
+        <!-- Setup Wizard -->
+        <div class="setup-wizard" id="setupWizard">
+            <div>
+                <div class="wizard-header">🎬 Tapeworm</div>
+                <div class="wizard-subtitle">AI-powered audition rehearsal assistant</div>
+            </div>
 
-        <div class="tabs">
-            <button class="tab-button active" onclick="switchTab('script')">📄 Script</button>
-            <button class="tab-button" onclick="switchTab('audition')">🎭 Audition</button>
-            <button class="tab-button" onclick="switchTab('settings')">⚙️ Settings</button>
+            <div class="wizard-section">
+                <div class="wizard-label">1. Upload Script (PDF, DOCX, or TXT)</div>
+                <input type="file" id="scriptFile" class="wizard-input" accept=".pdf,.docx,.txt">
+            </div>
+
+            <div class="wizard-section">
+                <div class="wizard-label">2. ElevenLabs API Key (optional, for AI voice)</div>
+                <input type="password" id="elevenLabsKey" class="wizard-input" placeholder="sk_...">
+            </div>
+
+            <div class="wizard-section">
+                <div class="wizard-label">3. Nano Banana API Key (optional, for backgrounds)</div>
+                <input type="password" id="nanoBananaKey" class="wizard-input" placeholder="sk_...">
+            </div>
+
+            <div class="wizard-section">
+                <div class="wizard-label">4. Which character are you?</div>
+                <input type="text" id="characterSelect" class="wizard-input" placeholder="Type character name or speak it">
+                <div style="font-size: 0.85rem; color: #aaa; margin-top: 10px;">
+                    🎤 Or click below to speak your character name
+                </div>
+                <button class="wizard-button" id="speakBtn" style="background: #666; margin-top: 10px;">🎤 Speak Character Name</button>
+            </div>
+
+            <button class="wizard-button" id="startBtn">Start Audition</button>
         </div>
 
-        <!-- SCRIPT TAB -->
-        <div id="script" class="tab-content active">
-            <div class="upload-area" onclick="document.getElementById('fileInput').click()">
-                <h2>📁 Upload Your Script</h2>
-                <p>Drag & drop or click to upload PDF, DOCX, or TXT</p>
-                <input type="file" id="fileInput" accept=".pdf,.docx,.txt" onchange="handleFileUpload(event)">
+        <!-- Audition View -->
+        <div class="audition-view hidden" id="auditionView">
+            <div class="audition-header">
+                <div>
+                    <div class="audition-title">Audition in Progress</div>
+                    <div class="audition-character" id="currentCharacterDisplay"></div>
+                </div>
+                <button class="audition-reset" id="resetBtn">← Back to Setup</button>
             </div>
 
-            <div class="script-info" id="scriptInfo">
-                <h3>Script Loaded</h3>
-                <p>Characters found: <span id="characterCount">0</span></p>
-            </div>
+            <div class="stage-area">
+                <div class="stage">
+                    <div class="stage-title">📖 Script</div>
+                    <div class="stage-content" id="stageContent"></div>
+                </div>
 
-            <div class="character-select">
-                <label>Who are you playing?</label>
-                <input type="text" id="characterInput" placeholder="Type or select character..." onkeyup="filterCharacters()">
-                <div class="character-list" id="characterList"></div>
-            </div>
-
-            <button class="start-btn" onclick="startAudition()">🎬 Start Audition</button>
-        </div>
-
-        <!-- AUDITION TAB -->
-        <div id="audition" class="tab-content">
-            <div class="background-controls">
-                <button class="bg-swatch active" data-color="off" onclick="setBackground('off')" title="OFF"></button>
-                <button class="bg-swatch" data-color="darkgrey" onclick="setBackground('darkgrey')" title="Dark Grey"></button>
-                <button class="bg-swatch" data-color="black" onclick="setBackground('black')" title="Black"></button>
-                <button class="bg-swatch" data-color="white" onclick="setBackground('white')" title="White"></button>
-                <button class="bg-swatch" data-color="blue" onclick="setBackground('blue')" title="Blue"></button>
-            </div>
-
-            <div class="slider-group">
-                <h3>💡 Lighting Controls</h3>
-                <div class="slider-item">
-                    <div class="slider-label">
-                        <span>Brightness</span>
-                        <span id="brightnessValue">1.0</span>
+                <div class="camera-container">
+                    <div class="camera-feed">
+                        <video id="videoFeed" autoplay playsinline></video>
                     </div>
-                    <input type="range" id="brightnesSlider" min="0.5" max="2" step="0.1" value="1" oninput="updateLighting()">
-                </div>
-                <div class="slider-item">
-                    <div class="slider-label">
-                        <span>Contrast</span>
-                        <span id="contrastValue">1.0</span>
+
+                    <div class="camera-controls">
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span>Virtual Background</span>
+                            </div>
+                            <div class="bg-swatches">
+                                <div class="swatch swatch-off active" data-bg="off" title="Off"></div>
+                                <div class="swatch swatch-darkgrey" data-bg="darkgrey" title="Dark Grey"></div>
+                                <div class="swatch swatch-black" data-bg="black" title="Black"></div>
+                                <div class="swatch swatch-white" data-bg="white" title="White"></div>
+                                <div class="swatch swatch-blue" data-bg="blue" title="Blue"></div>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span>Brightness</span>
+                                <span id="brightnessValue">1.0x</span>
+                            </div>
+                            <input type="range" class="slider" id="brightnessSlider" min="0.5" max="2" step="0.1" value="1">
+                        </div>
+
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span>Contrast</span>
+                                <span id="contrastValue">1.0x</span>
+                            </div>
+                            <input type="range" class="slider" id="contrastSlider" min="0.5" max="2" step="0.1" value="1">
+                        </div>
+
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span>Saturation</span>
+                                <span id="saturationValue">1.0x</span>
+                            </div>
+                            <input type="range" class="slider" id="saturationSlider" min="0" max="2" step="0.1" value="1">
+                        </div>
                     </div>
-                    <input type="range" id="contrastSlider" min="0.5" max="2" step="0.1" value="1" oninput="updateLighting()">
-                </div>
-                <div class="slider-item">
-                    <div class="slider-label">
-                        <span>Saturation</span>
-                        <span id="saturationValue">1.0</span>
+
+                    <div class="playback-controls">
+                        <button class="control-btn" id="playBtn">▶ Play</button>
+                        <button class="control-btn secondary" id="skipBtn">→ Skip</button>
+                        <button class="control-btn secondary" id="replayBtn">🔄 Replay</button>
                     </div>
-                    <input type="range" id="saturationSlider" min="0" max="2" step="0.1" value="1" oninput="updateLighting()">
+
+                    <div class="playback-status" id="playbackStatus"></div>
                 </div>
             </div>
-
-            <div class="stage" id="stage">
-                <canvas id="stageCanvas"></canvas>
-                <div class="stage-text speaker" id="speakerLabel"></div>
-                <div class="stage-text dialogue" id="dialogueText"></div>
-            </div>
-
-            <div class="controls">
-                <button class="control-btn" onclick="replayLine()">🔁 Replay</button>
-                <button class="control-btn primary" onclick="playNextLine()">▶ Play Next Line</button>
-                <button class="control-btn" onclick="skipLine()">⏭ Skip</button>
-            </div>
-
-            <div class="status" id="status">Ready</div>
-        </div>
-
-        <!-- SETTINGS TAB -->
-        <div id="settings" class="tab-content">
-            <div class="settings-grid">
-                <div class="setting-box">
-                    <label>ElevenLabs API Key</label>
-                    <input type="password" id="elevenLabsKey" placeholder="Your API key here">
-                </div>
-                <div class="setting-box">
-                    <label>ElevenLabs Voice ID (optional)</label>
-                    <input type="text" id="voiceId" placeholder="e.g., Rachel, Adam, etc.">
-                </div>
-                <div class="setting-box">
-                    <label>Nano Banana API Key</label>
-                    <input type="password" id="nanoBananaKey" placeholder="Your API key here">
-                </div>
-                <div class="setting-box">
-                    <label>Nano Banana Endpoint</label>
-                    <input type="text" id="nanoBananaEndpoint" placeholder="https://api.nanobanana.ai/...">
-                </div>
-            </div>
-            <p style="margin-top: 20px; color: #888; font-size: 12px;">
-                ℹ️ All settings are stored in your browser session only. They're never sent to any server.
-            </p>
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix"></script>
-
     <script>
-        let scriptData = null;
-        let selectedCharacter = null;
+        // State
+        let scriptLines = [];
+        let currentCharacter = '';
         let currentLineIndex = 0;
-        let currentAudioContext = null;
-        let bodyPixModel = null;
         let videoStream = null;
-        let currentBGColor = 'off';
-        let isSegmenting = false;
+        let canvas = null;
+        let animationFrameId = null;
+        let isPlayingAudio = false;
+        let selectedBg = 'off';
+        let brightness = 1;
+        let contrast = 1;
+        let saturation = 1;
 
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
-            document.getElementById(tabName).classList.add('active');
-            document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
-            
-            if (tabName === 'audition') {
-                initAuditionTab();
-            }
-        }
+        // Color map
+        const bgColors = {
+            off: null,
+            darkgrey: '#333333',
+            black: '#000000',
+            white: '#ffffff',
+            blue: '#1e3a8a'
+        };
 
-        async function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+        // Get Elements
+        const scriptFileInput = document.getElementById('scriptFile');
+        const characterInput = document.getElementById('characterSelect');
+        const speakBtn = document.getElementById('speakBtn');
+        const startBtn = document.getElementById('startBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const setupWizard = document.getElementById('setupWizard');
+        const auditionView = document.getElementById('auditionView');
+        const videoFeed = document.getElementById('videoFeed');
+        const stageContent = document.getElementById('stageContent');
+        const currentCharacterDisplay = document.getElementById('currentCharacterDisplay');
+        const playBtn = document.getElementById('playBtn');
+        const skipBtn = document.getElementById('skipBtn');
+        const replayBtn = document.getElementById('replayBtn');
+        const playbackStatus = document.getElementById('playbackStatus');
+        const brightnessSlider = document.getElementById('brightnessSlider');
+        const contrastSlider = document.getElementById('contrastSlider');
+        const saturationSlider = document.getElementById('saturationSlider');
+        const brightnessValue = document.getElementById('brightnessValue');
+        const contrastValue = document.getElementById('contrastValue');
+        const saturationValue = document.getElementById('saturationValue');
 
-            try {
-                let text = '';
-                
-                if (file.name.endsWith('.txt')) {
-                    text = await file.text();
-                } else if (file.name.endsWith('.pdf')) {
-                    const arrayBuffer = await file.arrayBuffer();
-                    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-                    for (let i = 1; i <= pdf.numPages; i++) {
-                        const page = await pdf.getPage(i);
-                        const content = await page.getTextContent();
-                        text += content.items.map(item => item.str).join(' ') + '\n';
-                    }
-                } else if (file.name.endsWith('.docx')) {
-                    alert('DOCX parsing requires additional setup. Please convert to PDF or TXT.');
-                    return;
-                }
+        // Speech Recognition
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.lang = 'en-US';
 
-                parseScript(text);
-            } catch (error) {
-                console.error('Error reading file:', error);
-                alert('Error reading file. Please try another format.');
-            }
-        }
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            characterInput.value = transcript.trim();
+        };
 
+        speakBtn.addEventListener('click', () => {
+            recognition.start();
+        });
+
+        // Parse Script
         function parseScript(text) {
-            const lines = text.split('\n');
-            const characters = new Set();
-            const dialogue = [];
+            const lines = text.split('\n').filter(line => line.trim());
+            const parsed = [];
 
-            let currentSpeaker = null;
-            let currentDialogue = '';
-
-            for (const line of lines) {
-                const trimmed = line.trim();
-                
-                if (trimmed === '' || trimmed.length < 2) {
-                    if (currentSpeaker && currentDialogue) {
-                        dialogue.push({ speaker: currentSpeaker, text: currentDialogue.trim() });
-                        currentDialogue = '';
-                    }
-                    continue;
-                }
-
-                if (trimmed === trimmed.toUpperCase() && trimmed.length < 50) {
-                    if (currentDialogue) {
-                        dialogue.push({ speaker: currentSpeaker, text: currentDialogue.trim() });
-                    }
-                    currentSpeaker = trimmed;
-                    currentDialogue = '';
-                    characters.add(trimmed);
-                } else {
-                    currentDialogue += ' ' + trimmed;
-                }
-            }
-
-            if (currentSpeaker && currentDialogue) {
-                dialogue.push({ speaker: currentSpeaker, text: currentDialogue.trim() });
-            }
-
-            scriptData = { characters: Array.from(characters), dialogue };
-            displayCharacters();
-            document.getElementById('scriptInfo').classList.add('show');
-            document.getElementById('characterCount').textContent = characters.size;
-        }
-
-        function displayCharacters() {
-            const list = document.getElementById('characterList');
-            list.innerHTML = scriptData.characters.map(char => 
-                `<button class="character-btn" onclick="selectCharacter('${char}')">${char}</button>`
-            ).join('');
-        }
-
-        function filterCharacters() {
-            const input = document.getElementById('characterInput').value.toLowerCase();
-            const buttons = document.querySelectorAll('.character-btn');
-            
-            buttons.forEach(btn => {
-                if (btn.textContent.toLowerCase().includes(input)) {
-                    btn.style.display = '';
-                } else {
-                    btn.style.display = 'none';
+            lines.forEach(line => {
+                const match = line.match(/^([A-Z\s]+):\s*(.*)/);
+                if (match) {
+                    parsed.push({
+                        speaker: match[1].trim(),
+                        text: match[2].trim()
+                    });
+                } else if (parsed.length > 0) {
+                    parsed[parsed.length - 1].text += ' ' + line.trim();
                 }
             });
+
+            return parsed;
         }
 
-        function selectCharacter(character) {
-            selectedCharacter = character;
-            document.getElementById('characterInput').value = character;
-            document.querySelectorAll('.character-btn').forEach(btn => btn.classList.remove('selected'));
-            event.target.classList.add('selected');
-        }
+        // File Upload Handler
+        scriptFileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
 
-        async function startAudition() {
-            if (!scriptData || !selectedCharacter) {
-                alert('Please upload a script and select a character.');
+            let text = '';
+
+            if (file.type === 'text/plain') {
+                text = await file.text();
+            } else if (file.name.endsWith('.docx')) {
+                // Simple DOCX parsing (requires library, using basic extraction)
+                const arrayBuffer = await file.arrayBuffer();
+                const zip = new JSZip();
+                const xmlDoc = await zip.loadAsync(arrayBuffer).then(z => z.file('word/document.xml').async('text'));
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(xmlDoc, 'text/xml');
+                text = doc.getElementsByTagName('w:t').length > 0 
+                    ? Array.from(doc.getElementsByTagName('w:t')).map(el => el.textContent).join(' ')
+                    : '';
+            } else if (file.name.endsWith('.pdf')) {
+                alert('PDF parsing requires additional libraries. Please convert to TXT or DOCX.');
                 return;
             }
 
-            switchTab('audition');
+            scriptLines = parseScript(text);
+            if (scriptLines.length === 0) {
+                alert('No script content found. Make sure your script has speaker names followed by colons.');
+            }
+        });
+
+        // Start Audition
+        startBtn.addEventListener('click', async () => {
+            if (!scriptLines.length) {
+                alert('Please upload a script first');
+                return;
+            }
+            if (!characterInput.value.trim()) {
+                alert('Please select a character');
+                return;
+            }
+
+            currentCharacter = characterInput.value.trim().toUpperCase();
             currentLineIndex = 0;
-        }
 
-        async function initAuditionTab() {
-            const canvas = document.getElementById('stageCanvas');
-            const ctx = canvas.getContext('2d');
-
-            canvas.width = canvas.offsetWidth;
-            canvas.height = canvas.offsetHeight;
-
+            // Start video
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { width: { ideal: 1280 }, height: { ideal: 720 } } 
+                videoStream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } },
+                    audio: false
                 });
-                videoStream = stream;
-
-                const video = document.createElement('video');
-                video.srcObject = stream;
-                video.play();
-
-                const renderFrame = async () => {
-                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-                    if (currentBGColor !== 'off' && bodyPixModel && isSegmenting) {
-                        try {
-                            const prediction = await bodyPixModel.segmentPerson(video);
-                            const backgroundBlur = bodyPix.toMask(prediction, { r: 0, g: 0, b: 0 });
-                            
-                            let bgColor = currentBGColor;
-                            const colorMap = {
-                                'darkgrey': '#333333',
-                                'black': '#000000',
-                                'white': '#ffffff',
-                                'blue': '#1e3a8a'
-                            };
-
-                            if (colorMap[bgColor]) {
-                                ctx.fillStyle = colorMap[bgColor];
-                                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                                const data = imageData.data;
-
-                                for (let i = 0; i < backgroundBlur.data.length; i += 4) {
-                                    if (backgroundBlur.data[i + 3] === 0) {
-                                        const hexColor = colorMap[bgColor];
-                                        const r = parseInt(hexColor.slice(1, 3), 16);
-                                        const g = parseInt(hexColor.slice(3, 5), 16);
-                                        const b = parseInt(hexColor.slice(5, 7), 16);
-
-                                        data[i] = r;
-                                        data[i + 1] = g;
-                                        data[i + 2] = b;
-                                    }
-                                }
-
-                                ctx.putImageData(imageData, 0, 0);
-                            }
-                        } catch (e) {
-                            console.log('Segmentation in progress...');
-                        }
-                    }
-
-                    // Apply lighting filters
-                    applyLighting(ctx, canvas.width, canvas.height);
-
-                    updateStageText();
-                    requestAnimationFrame(renderFrame);
-                };
-
-                renderFrame();
-
-                // Load BodyPix model for segmentation
-                if (currentBGColor !== 'off') {
-                    bodyPixModel = await bodyPix.load();
-                    isSegmenting = true;
-                }
-            } catch (error) {
-                console.error('Camera error:', error);
-                document.getElementById('status').textContent = '❌ Camera access denied';
-                document.getElementById('status').classList.add('error');
-            }
-        }
-
-        function setBackground(color) {
-            currentBGColor = color;
-            document.querySelectorAll('.bg-swatch').forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`[data-color="${color}"]`).classList.add('active');
-
-            if (color !== 'off' && !bodyPixModel) {
-                isSegmenting = true;
-                document.getElementById('status').textContent = 'Loading background segmentation...';
-            }
-        }
-
-        function updateLighting() {
-            const brightness = parseFloat(document.getElementById('brightnesSlider').value);
-            const contrast = parseFloat(document.getElementById('contrastSlider').value);
-            const saturation = parseFloat(document.getElementById('saturationSlider').value);
-
-            document.getElementById('brightnessValue').textContent = brightness.toFixed(1);
-            document.getElementById('contrastValue').textContent = contrast.toFixed(1);
-            document.getElementById('saturationValue').textContent = saturation.toFixed(1);
-        }
-
-        function applyLighting(ctx, width, height) {
-            const brightness = parseFloat(document.getElementById('brightnesSlider').value);
-            const contrast = parseFloat(document.getElementById('contrastSlider').value);
-            const saturation = parseFloat(document.getElementById('saturationSlider').value);
-
-            ctx.filter = `brightness(${brightness}) contrast(${contrast}) saturate(${saturation})`;
-            const imageData = ctx.getImageData(0, 0, width, height);
-            ctx.putImageData(imageData, 0, 0);
-            ctx.filter = 'none';
-        }
-
-        function updateStageText() {
-            if (!scriptData || currentLineIndex >= scriptData.dialogue.length) return;
-
-            const currentLine = scriptData.dialogue[currentLineIndex];
-            const speakerLabel = document.getElementById('speakerLabel');
-            const dialogueText = document.getElementById('dialogueText');
-
-            if (currentLine.speaker === selectedCharacter) {
-                speakerLabel.textContent = 'YOUR LINE:';
-                speakerLabel.style.color = '#22c55e';
-                dialogueText.textContent = currentLine.text;
-                dialogueText.classList.remove('ai-line');
-                dialogueText.classList.add('your-line');
-            } else {
-                speakerLabel.textContent = `${currentLine.speaker}:`;
-                speakerLabel.style.color = '#3b82f6';
-                dialogueText.textContent = currentLine.text;
-                dialogueText.classList.remove('your-line');
-                dialogueText.classList.add('ai-line');
-            }
-        }
-
-        async function playNextLine() {
-            if (!scriptData || currentLineIndex >= scriptData.dialogue.length) {
-                document.getElementById('status').textContent = '✅ Scene complete!';
+                videoFeed.srcObject = videoStream;
+            } catch (err) {
+                alert('Camera access denied');
                 return;
             }
 
-            const currentLine = scriptData.dialogue[currentLineIndex];
+            setupWizard.classList.add('hidden');
+            auditionView.classList.remove('hidden');
+            currentCharacterDisplay.textContent = `Playing: ${currentCharacter}`;
 
-            if (currentLine.speaker !== selectedCharacter) {
-                const apiKey = document.getElementById('elevenLabsKey').value;
-                const voiceId = document.getElementById('voiceId').value || 'Rachel';
+            renderLines();
+            startVideoProcessing();
+        });
 
-                if (apiKey) {
-                    try {
-                        const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
-                            method: 'POST',
-                            headers: {
-                                'xi-api-key': apiKey,
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                text: currentLine.text,
-                                voice_settings: { stability: 0.5, similarity_boost: 0.75 }
-                            })
-                        });
-
-                        if (response.ok) {
-                            const audio = await response.arrayBuffer();
-                            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                            const audioBuffer = await audioContext.decodeAudioData(audio);
-                            const source = audioContext.createBufferSource();
-                            source.buffer = audioBuffer;
-                            source.connect(audioContext.destination);
-                            source.start(0);
-                        }
-                    } catch (error) {
-                        console.error('TTS error:', error);
-                        useBrowserSpeech(currentLine.text);
-                    }
-                } else {
-                    useBrowserSpeech(currentLine.text);
+        // Render Script Lines
+        function renderLines() {
+            stageContent.innerHTML = '';
+            scriptLines.forEach((line, idx) => {
+                const div = document.createElement('div');
+                div.className = 'line';
+                if (line.speaker === currentCharacter) {
+                    div.classList.add('character');
                 }
+                if (idx === currentLineIndex) {
+                    div.classList.add('current');
+                }
+                if (idx < currentLineIndex) {
+                    div.classList.add('done');
+                }
+
+                div.innerHTML = `<div class="line-speaker">${line.speaker}</div><div class="line-text">${line.text}</div>`;
+                stageContent.appendChild(div);
+            });
+
+            // Scroll to current line
+            const currentLine = stageContent.querySelector('.line.current');
+            if (currentLine) {
+                currentLine.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        // Video Processing with Filters
+        function startVideoProcessing() {
+            canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = videoFeed.videoWidth || 1280;
+            canvas.height = videoFeed.videoHeight || 720;
+
+            function processFrame() {
+                ctx.drawImage(videoFeed, 0, 0, canvas.width, canvas.height);
+
+                // Apply background if selected
+                if (selectedBg !== 'off') {
+                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    const data = imageData.data;
+
+                    // Simple body detection (Green screen replacement)
+                    // This uses a basic chroma-key approach
+                    for (let i = 0; i < data.length; i += 4) {
+                        const r = data[i];
+                        const g = data[i + 1];
+                        const b = data[i + 2];
+
+                        // If pixel is very dark (face/body), keep it; else replace
+                        const brightness = (r + g + b) / 3;
+                        if (brightness > 100) {
+                            const bgColor = bgColors[selectedBg];
+                            if (bgColor) {
+                                const hex = bgColor.replace('#', '');
+                                data[i] = parseInt(hex.substring(0, 2), 16);
+                                data[i + 1] = parseInt(hex.substring(2, 4), 16);
+                                data[i + 2] = parseInt(hex.substring(4, 6), 16);
+                            }
+                        }
+                    }
+
+                    ctx.putImageData(imageData, 0, 0);
+                }
+
+                // Apply lighting filters
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const data = imageData.data;
+
+                for (let i = 0; i < data.length; i += 4) {
+                    data[i] = Math.min(255, data[i] * brightness * contrast);
+                    data[i + 1] = Math.min(255, data[i + 1] * brightness * contrast);
+                    data[i + 2] = Math.min(255, data[i + 2] * brightness * contrast);
+
+                    // Saturation
+                    const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                    data[i] = Math.min(255, avg + (data[i] - avg) * saturation);
+                    data[i + 1] = Math.min(255, avg + (data[i + 1] - avg) * saturation);
+                    data[i + 2] = Math.min(255, avg + (data[i + 2] - avg) * saturation);
+                }
+
+                ctx.putImageData(imageData, 0, 0);
+                animationFrameId = requestAnimationFrame(processFrame);
             }
 
-            currentLineIndex++;
-            updateStageText();
+            processFrame();
         }
 
-        function useBrowserSpeech(text) {
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.rate = 0.9;
-            window.speechSynthesis.speak(utterance);
-        }
+        // Background Selection
+        document.querySelectorAll('.swatch').forEach(swatch => {
+            swatch.addEventListener('click', () => {
+                document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+                swatch.classList.add('active');
+                selectedBg = swatch.dataset.bg;
+            });
+        });
 
-        function replayLine() {
+        // Lighting Controls
+        brightnessSlider.addEventListener('input', (e) => {
+            brightness = parseFloat(e.target.value);
+            brightnessValue.textContent = brightness.toFixed(1) + 'x';
+        });
+
+        contrastSlider.addEventListener('input', (e) => {
+            contrast = parseFloat(e.target.value);
+            contrastValue.textContent = contrast.toFixed(1) + 'x';
+        });
+
+        saturationSlider.addEventListener('input', (e) => {
+            saturation = parseFloat(e.target.value);
+            saturationValue.textContent = saturation.toFixed(1) + 'x';
+        });
+
+        // Playback Controls
+        playBtn.addEventListener('click', () => {
+            if (currentLineIndex < scriptLines.length) {
+                const line = scriptLines[currentLineIndex];
+                playbackStatus.innerHTML = '<div class="spinner"></div> Playing...';
+                
+                // Simulate audio playback
+                setTimeout(() => {
+                    currentLineIndex++;
+                    renderLines();
+                    playbackStatus.textContent = '';
+                }, 1500);
+            } else {
+                playbackStatus.textContent = '✅ Audition Complete!';
+            }
+        });
+
+        skipBtn.addEventListener('click', () => {
+            if (currentLineIndex < scriptLines.length) {
+                currentLineIndex++;
+                renderLines();
+                playbackStatus.textContent = '';
+            }
+        });
+
+        replayBtn.addEventListener('click', () => {
             if (currentLineIndex > 0) {
                 currentLineIndex--;
-                updateStageText();
+                renderLines();
+                playbackStatus.textContent = '';
             }
-        }
+        });
 
-        function skipLine() {
-            if (currentLineIndex < scriptData.dialogue.length) {
-                currentLineIndex++;
-                updateStageText();
+        // Reset
+        resetBtn.addEventListener('click', () => {
+            if (videoStream) {
+                videoStream.getTracks().forEach(track => track.stop());
             }
-        }
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+            }
+            setupWizard.classList.remove('hidden');
+            auditionView.classList.add('hidden');
+            scriptLines = [];
+            currentCharacter = '';
+            characterInput.value = '';
+        });
 
-        // Keyboard shortcuts
+        // Keyboard Shortcuts
         document.addEventListener('keydown', (e) => {
-            if (e.code === 'Space') { e.preventDefault(); playNextLine(); }
-            if (e.code === 'ArrowRight') { skipLine(); }
-            if (e.code === 'KeyR') { replayLine(); }
+            if (e.code === 'Space' && !setupWizard.classList.contains('hidden')) {
+                e.preventDefault();
+                playBtn.click();
+            } else if (e.code === 'ArrowRight') {
+                skipBtn.click();
+            } else if (e.code === 'KeyR') {
+                replayBtn.click();
+            }
         });
     </script>
 </body>
