@@ -3,487 +3,403 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tapeworm - Audition Assistant</title>
+    <title>Tapeworm Audition Assistant</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: 'Arial', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             padding: 20px;
         }
-
+        
         .container {
             background: white;
-            border-radius: 20px;
+            border-radius: 12px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             max-width: 900px;
             width: 100%;
+            padding: 40px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .main-content {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            overflow: hidden;
-            gap: 0;
+            gap: 30px;
+            margin-bottom: 30px;
         }
-
-        .preview-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 40px;
+        
+        .section {
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: white;
         }
-
-        .preview-box {
-            width: 100%;
-            aspect-ratio: 9/16;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            position: relative;
-            background: #000;
+        
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+        
+        .section label {
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .section input,
+        .section textarea,
+        .section select {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 1em;
+            margin-bottom: 15px;
+            font-family: 'Arial', sans-serif;
+            transition: border-color 0.3s;
+        }
+        
+        .section input:focus,
+        .section textarea:focus,
+        .section select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .section textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .background-options {
             display: flex;
-            align-items: center;
-            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
         }
-
-        .preview-video {
+        
+        .bg-option {
+            width: 50px;
+            height: 50px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .bg-option:hover {
+            transform: scale(1.1);
+        }
+        
+        .bg-option.selected {
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+        }
+        
+        .bg-dark-grey {
+            background-color: #3a3a3a;
+        }
+        
+        .bg-black {
+            background-color: #000000;
+        }
+        
+        .bg-white {
+            background-color: #ffffff;
+            border: 2px solid #ccc;
+        }
+        
+        .bg-blue {
+            background-color: #1e40af;
+        }
+        
+        .bg-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .preview-section {
+            grid-column: 1 / -1;
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .preview-section h2 {
+            margin-bottom: 20px;
+        }
+        
+        .preview-container {
+            position: relative;
+            display: inline-block;
             width: 100%;
-            height: 100%;
-            object-fit: cover;
-            background: #000;
+            max-width: 600px;
+            aspect-ratio: 16 / 9;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #ccc;
         }
-
-        .bg-color {
+        
+        .preview-bg {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 0;
-        }
-
-        .preview-content {
-            position: relative;
             z-index: 1;
-            text-align: center;
-            color: white;
-            padding: 20px;
         }
-
-        .preview-content h3 {
-            font-size: 18px;
-            margin-bottom: 10px;
-            opacity: 0.8;
-        }
-
-        .preview-content p {
-            font-size: 14px;
-            opacity: 0.6;
-            line-height: 1.5;
-        }
-
-        .form-section {
-            padding: 40px;
+        
+        .preview-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            align-items: center;
+            z-index: 2;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            text-align: center;
         }
-
-        .form-section h1 {
-            font-size: 28px;
+        
+        .preview-character {
+            font-size: 1.5em;
+            font-weight: bold;
             margin-bottom: 10px;
-            color: #333;
         }
-
-        .form-section p {
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 14px;
+        
+        .preview-line {
+            font-size: 1.2em;
+            max-width: 90%;
+            word-wrap: break-word;
         }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #333;
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        input[type="text"],
-        textarea,
-        select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 14px;
-            font-family: inherit;
-            transition: border-color 0.3s;
-        }
-
-        input[type="text"]:focus,
-        textarea:focus,
-        select:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-
-        .bg-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+        
+        .controls {
+            display: flex;
             gap: 10px;
-            margin-top: 10px;
+            justify-content: center;
+            margin-top: 20px;
         }
-
-        .bg-button {
-            width: 100%;
-            height: 40px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 12px;
-            transition: transform 0.2s, box-shadow 0.2s;
-            text-transform: uppercase;
-        }
-
-        .bg-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .bg-button.active {
-            border: 3px solid #667eea;
-        }
-
-        .bg-dark-grey {
-            background: #424242;
-            color: white;
-        }
-
-        .bg-black {
-            background: #1a1a1a;
-            color: white;
-        }
-
-        .bg-white {
-            background: #ffffff;
-            color: #333;
-            border: 2px solid #e0e0e0;
-        }
-
-        .bg-blue {
-            background: #2196F3;
-            color: white;
-        }
-
-        .bg-wood {
-            background: linear-gradient(135deg, #8B6914 0%, #5a4009 100%);
-            color: white;
-        }
-
-        .actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 30px;
-        }
-
+        
         button {
-            padding: 12px 20px;
+            padding: 12px 24px;
             border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
-            text-transform: uppercase;
         }
-
-        .btn-record {
+        
+        .btn-primary {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            grid-column: 1 / -1;
         }
-
-        .btn-record:hover {
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        
+        .btn-primary:hover {
             transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
         }
-
-        .btn-clear {
-            background: #f0f0f0;
+        
+        .btn-secondary {
+            background: #e0e0e0;
             color: #333;
         }
-
-        .btn-clear:hover {
-            background: #e0e0e0;
+        
+        .btn-secondary:hover {
+            background: #d0d0d0;
         }
-
-        .btn-download {
-            background: #4CAF50;
-            color: white;
+        
+        .lighting-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
         }
-
-        .btn-download:hover {
-            background: #45a049;
+        
+        .lighting-controls label {
+            margin-bottom: 0;
         }
-
+        
+        .lighting-controls input[type="range"] {
+            margin-bottom: 0;
+            width: 150px;
+        }
+        
+        .brightness-value {
+            color: #666;
+            font-weight: bold;
+            min-width: 50px;
+        }
+        
         @media (max-width: 768px) {
-            .container {
+            .main-content {
                 grid-template-columns: 1fr;
             }
-
-            .preview-section {
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .container {
                 padding: 20px;
             }
-
-            .form-section {
-                padding: 20px;
-            }
-
-            .form-section h1 {
-                font-size: 24px;
-            }
-        }
-
-        .lighting-controls {
-            margin-top: 15px;
-            padding: 15px;
-            background: #f5f5f5;
-            border-radius: 8px;
-        }
-
-        .slider-group {
-            margin-bottom: 15px;
-        }
-
-        .slider-group label {
-            font-size: 12px;
-            margin-bottom: 5px;
-        }
-
-        input[type="range"] {
-            width: 100%;
-            cursor: pointer;
-        }
-
-        .value-display {
-            display: inline-block;
-            background: #667eea;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            margin-left: 10px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Preview Section -->
-        <div class="preview-section">
-            <div class="preview-box">
-                <div class="bg-color" id="bgColor"></div>
-                <div class="preview-content">
-                    <h3 id="characterDisplay">Character Name</h3>
-                    <p id="lineDisplay">Your audition line will appear here...</p>
-                </div>
-            </div>
+        <div class="header">
+            <h1>🪱 Tapeworm</h1>
+            <p>Audition Assistant for Actors</p>
         </div>
-
-        <!-- Form Section -->
-        <div class="form-section">
-            <h1>Tapeworm</h1>
-            <p>Prepare your audition with confidence</p>
-
-            <div class="form-group">
-                <label for="characterName">Character Name *</label>
-                <input type="text" id="characterName" placeholder="e.g., John Doe" required>
+        
+        <div class="main-content">
+            <div class="section">
+                <h2>Your Script</h2>
+                <label>Character Name</label>
+                <input type="text" id="characterName" placeholder="e.g., Sarah Johnson">
+                
+                <label>Your Lines</label>
+                <textarea id="scriptLines" placeholder="Paste your audition lines here..."></textarea>
             </div>
-
-            <div class="form-group">
-                <label for="scriptLine">Script Line *</label>
-                <textarea id="scriptLine" placeholder="Paste your audition line here..." required></textarea>
-            </div>
-
-            <div class="form-group">
-                <label>Background Color *</label>
-                <div class="bg-buttons">
-                    <button class="bg-button bg-dark-grey" onclick="setBackground('#424242')">Dark Grey</button>
-                    <button class="bg-button bg-black" onclick="setBackground('#1a1a1a')">Black</button>
-                    <button class="bg-button bg-white" onclick="setBackground('#ffffff')">White</button>
-                    <button class="bg-button bg-blue" onclick="setBackground('#2196F3')">Blue</button>
-                    <button class="bg-button bg-wood" onclick="setBackground('linear-gradient(135deg, #8B6914 0%, #5a4009 100%)')">Wood</button>
+            
+            <div class="section">
+                <h2>Scene Setup</h2>
+                <label>Select Background</label>
+                <div class="background-options">
+                    <div class="bg-option bg-dark-grey selected" data-bg="bg-dark-grey" title="Dark Grey"></div>
+                    <div class="bg-option bg-black" data-bg="bg-black" title="Black"></div>
+                    <div class="bg-option bg-white" data-bg="bg-white" title="White"></div>
+                    <div class="bg-option bg-blue" data-bg="bg-blue" title="Blue"></div>
+                    <div class="bg-option bg-gradient" data-bg="bg-gradient" title="Gradient"></div>
                 </div>
-            </div>
-
-            <div class="form-group">
-                <label>Lighting & Adjustments</label>
+                
+                <label>Lighting</label>
                 <div class="lighting-controls">
-                    <div class="slider-group">
-                        <label for="brightness">Brightness: <span class="value-display" id="brightnessValue">100%</span></label>
-                        <input type="range" id="brightness" min="50" max="150" value="100" onchange="updateLighting()">
-                    </div>
-                    <div class="slider-group">
-                        <label for="contrast">Contrast: <span class="value-display" id="contrastValue">100%</span></label>
-                        <input type="range" id="contrast" min="50" max="150" value="100" onchange="updateLighting()">
-                    </div>
+                    <label>Brightness:</label>
+                    <input type="range" id="brightness" min="50" max="150" value="100">
+                    <span class="brightness-value" id="brightnessValue">100%</span>
+                </div>
+                
+                <label>Contrast:</label>
+                <div class="lighting-controls">
+                    <input type="range" id="contrast" min="80" max="150" value="100">
+                    <span class="brightness-value" id="contrastValue">100%</span>
                 </div>
             </div>
-
-            <div class="actions">
-                <button class="btn-clear" onclick="clearForm()">Clear</button>
-                <button class="btn-download" onclick="downloadSetup()">Save</button>
-                <button class="btn-record" onclick="startRecording()">🎥 Record Audition</button>
+            
+            <div class="preview-section">
+                <h2>Live Preview</h2>
+                <div class="preview-container">
+                    <div class="preview-bg bg-dark-grey" id="previewBg" style="filter: brightness(100%) contrast(100%);"></div>
+                    <div class="preview-content" id="previewContent">
+                        <div class="preview-character" id="previewCharacter">Your Character</div>
+                        <div class="preview-line" id="previewLine">"Your lines appear here"</div>
+                    </div>
+                </div>
+                <div class="controls">
+                    <button class="btn-primary" onclick="recordAudition()">🎥 Start Recording</button>
+                    <button class="btn-secondary" onclick="clearAll()">Clear</button>
+                </div>
             </div>
         </div>
     </div>
-
+    
     <script>
-        let mediaRecorder;
-        let recordedChunks = [];
-        let selectedBgColor = '#424242';
-
-        function updatePreview() {
-            const charName = document.getElementById('characterName').value || 'Character Name';
-            const line = document.getElementById('scriptLine').value || 'Your audition line will appear here...';
-            
-            document.getElementById('characterDisplay').textContent = charName;
-            document.getElementById('lineDisplay').textContent = line;
-        }
-
-        function setBackground(color) {
-            selectedBgColor = color;
-            document.getElementById('bgColor').style.background = color;
-            
-            // Update button states
-            document.querySelectorAll('.bg-button').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-        }
-
-        function updateLighting() {
-            const brightness = document.getElementById('brightness').value;
-            const contrast = document.getElementById('contrast').value;
-            
-            document.getElementById('brightnessValue').textContent = brightness + '%';
-            document.getElementById('contrastValue').textContent = contrast + '%';
-            
-            const bgColor = document.getElementById('bgColor');
-            bgColor.style.filter = `brightness(${brightness}%) contrast(${contrast}%)`;
-        }
-
-        function clearForm() {
-            document.getElementById('characterName').value = '';
-            document.getElementById('scriptLine').value = '';
-            document.getElementById('brightness').value = 100;
-            document.getElementById('contrast').value = 100;
-            selectedBgColor = '#424242';
-            document.getElementById('bgColor').style.background = selectedBgColor;
-            document.getElementById('bgColor').style.filter = 'none';
-            updatePreview();
-        }
-
-        function downloadSetup() {
-            const charName = document.getElementById('characterName').value;
-            const line = document.getElementById('scriptLine').value;
-            const brightness = document.getElementById('brightness').value;
-            const contrast = document.getElementById('contrast').value;
-
-            if (!charName || !line) {
-                alert('Please fill in character name and script line');
-                return;
-            }
-
-            const setup = {
-                character: charName,
-                line: line,
-                backgroundColor: selectedBgColor,
-                brightness: brightness,
-                contrast: contrast,
-                timestamp: new Date().toLocaleString()
-            };
-
-            const dataStr = JSON.stringify(setup, null, 2);
-            const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
-            
-            const exportFileDefaultName = `${charName.replace(/\s+/g, '_')}_audition_setup.json`;
-            
-            const linkElement = document.createElement('a');
-            linkElement.setAttribute('href', dataUri);
-            linkElement.setAttribute('download', exportFileDefaultName);
-            linkElement.click();
-        }
-
-        async function startRecording() {
-            try {
-                const canvas = document.querySelector('.preview-box');
-                const stream = await navigator.mediaDevices.getDisplayMedia({
-                    video: { mediaSource: 'screen' },
-                    audio: true
-                });
-
-                mediaRecorder = new MediaRecorder(stream);
-                recordedChunks = [];
-
-                mediaRecorder.ondataavailable = (event) => {
-                    if (event.data.size > 0) {
-                        recordedChunks.push(event.data);
-                    }
-                };
-
-                mediaRecorder.onstop = () => {
-                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `${document.getElementById('characterName').value || 'audition'}_${Date.now()}.webm`;
-                    a.click();
-                };
-
-                mediaRecorder.start();
-                alert('Recording started! Click OK to stop recording.');
+        // Background selection
+        document.querySelectorAll('.bg-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.bg-option').forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
                 
-                stream.getTracks().forEach(track => {
-                    track.onended = () => {
-                        mediaRecorder.stop();
-                    };
-                });
-
-            } catch (err) {
-                console.error('Error accessing media:', err);
-                alert('Unable to start recording. Please check your permissions.');
-            }
+                const bgClass = this.dataset.bg;
+                const previewBg = document.getElementById('previewBg');
+                previewBg.className = 'preview-bg ' + bgClass;
+            });
+        });
+        
+        // Character name input
+        document.getElementById('characterName').addEventListener('input', function() {
+            document.getElementById('previewCharacter').textContent = this.value || 'Your Character';
+        });
+        
+        // Script lines input
+        document.getElementById('scriptLines').addEventListener('input', function() {
+            const lines = this.value.split('\n').filter(line => line.trim());
+            const displayLine = lines[0] || 'Your lines appear here';
+            document.getElementById('previewLine').textContent = '"' + displayLine + '"';
+        });
+        
+        // Brightness control
+        document.getElementById('brightness').addEventListener('input', function() {
+            document.getElementById('brightnessValue').textContent = this.value + '%';
+            updateFilters();
+        });
+        
+        // Contrast control
+        document.getElementById('contrast').addEventListener('input', function() {
+            document.getElementById('contrastValue').textContent = this.value + '%';
+            updateFilters();
+        });
+        
+        function updateFilters() {
+            const brightness = document.getElementById('brightness').value;
+            const contrast = document.getElementById('contrast').value;
+            const previewBg = document.getElementById('previewBg');
+            previewBg.style.filter = `brightness(${brightness}%) contrast(${contrast}%)`;
         }
-
-        // Update preview on input change
-        document.getElementById('characterName').addEventListener('input', updatePreview);
-        document.getElementById('scriptLine').addEventListener('input', updatePreview);
-
-        // Set initial background
-        setBackground('#424242');
-        updatePreview();
+        
+        function recordAudition() {
+            const characterName = document.getElementById('characterName').value || 'Unknown Character';
+            const lines = document.getElementById('scriptLines').value || 'No lines provided';
+            
+            alert('🎬 Recording started!\n\nCharacter: ' + characterName + '\n\nLook at the camera and deliver your lines. When done, the recording will be saved.');
+            
+            // In a real app, this would trigger actual video recording
+            console.log('Recording:', { characterName, lines });
+        }
+        
+        function clearAll() {
+            document.getElementById('characterName').value = '';
+            document.getElementById('scriptLines').value = '';
+            document.getElementById('brightness').value = '100';
+            document.getElementById('contrast').value = '100';
+            document.getElementById('previewCharacter').textContent = 'Your Character';
+            document.getElementById('previewLine').textContent = '"Your lines appear here"';
+            document.getElementById('brightnessValue').textContent = '100%';
+            document.getElementById('contrastValue').textContent = '100%';
+            updateFilters();
+        }
     </script>
 </body>
 </html>
