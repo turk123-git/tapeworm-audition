@@ -3,487 +3,1251 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tapeworm - Audition Assistant</title>
+    <title>Tapeworm — Audition Assistant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #0d0d0d;
+            --surface: #1a1a1a;
+            --surface2: #242424;
+            --border: #333;
+            --text: #e8e8e8;
+            --text-dim: #888;
+            --accent: #ff4d4d;
+            --accent-hover: #ff6666;
+            --green: #4caf50;
+            --blue: #4a9eff;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
         }
 
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 900px;
-            width: 100%;
+        /* ── HEADER ── */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+            background: var(--surface);
+        }
+        .header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .header h1 span { color: var(--accent); }
+        .header-actions { display: flex; gap: 8px; }
+
+        /* ── BUTTONS ── */
+        .btn {
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--surface2);
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn:hover { background: var(--border); }
+        .btn-accent {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+        .btn-accent:hover { background: var(--accent-hover); }
+        .btn-green {
+            background: var(--green);
+            border-color: var(--green);
+            color: #fff;
+        }
+        .btn-sm { padding: 5px 10px; font-size: 12px; }
+
+        /* ── LAYOUT ── */
+        .main {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            overflow: hidden;
-            gap: 0;
+            grid-template-columns: 340px 1fr;
+            height: calc(100vh - 57px);
         }
 
-        .preview-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 40px;
+        /* ── SIDEBAR ── */
+        .sidebar {
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            background: var(--surface);
+        }
+        .sidebar-section {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        .sidebar-section h3 {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-dim);
+            margin-bottom: 10px;
+        }
+
+        /* ── TABS ── */
+        .tabs {
             display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: white;
+            border-bottom: 1px solid var(--border);
         }
-
-        .preview-box {
-            width: 100%;
-            aspect-ratio: 9/16;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            position: relative;
-            background: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .preview-video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            background: #000;
-        }
-
-        .bg-color {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-        }
-
-        .preview-content {
-            position: relative;
-            z-index: 1;
+        .tab {
+            flex: 1;
+            padding: 10px;
             text-align: center;
-            color: white;
-            padding: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-dim);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.15s;
         }
-
-        .preview-content h3 {
-            font-size: 18px;
-            margin-bottom: 10px;
-            opacity: 0.8;
+        .tab:hover { color: var(--text); }
+        .tab.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
         }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
 
-        .preview-content p {
-            font-size: 14px;
-            opacity: 0.6;
-            line-height: 1.5;
+        /* ── FORM ELEMENTS ── */
+        input[type="text"], input[type="password"], textarea, select {
+            width: 100%;
+            padding: 8px 12px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            font-size: 13px;
+            font-family: inherit;
         }
-
-        .form-section {
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
         }
-
-        .form-section h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
-            color: #333;
-        }
-
-        .form-section p {
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 14px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
+        textarea { resize: vertical; min-height: 80px; }
         label {
             display: block;
-            margin-bottom: 8px;
-            color: #333;
-            font-weight: 600;
-            font-size: 14px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-dim);
+            margin-bottom: 4px;
         }
+        .form-group { margin-bottom: 12px; }
 
-        input[type="text"],
-        textarea,
-        select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
+        /* ── SCRIPT UPLOAD ── */
+        .upload-zone {
+            border: 2px dashed var(--border);
             border-radius: 8px;
-            font-size: 14px;
-            font-family: inherit;
-            transition: border-color 0.3s;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.15s;
+            color: var(--text-dim);
+            font-size: 13px;
+        }
+        .upload-zone:hover, .upload-zone.dragover {
+            border-color: var(--accent);
+            color: var(--text);
+        }
+        .upload-zone input { display: none; }
+
+        /* ── SCRIPT LINES ── */
+        .script-display {
+            max-height: 300px;
+            overflow-y: auto;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            margin-top: 8px;
+        }
+        .script-line {
+            padding: 6px 10px;
+            font-size: 12px;
+            border-bottom: 1px solid var(--border);
+            line-height: 1.5;
+        }
+        .script-line:last-child { border-bottom: none; }
+        .script-line .char-name {
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-right: 4px;
+        }
+        .script-line.your-line {
+            background: rgba(255, 77, 77, 0.08);
+            border-left: 3px solid var(--accent);
+        }
+        .script-line.other-line {
+            background: rgba(74, 158, 255, 0.06);
+            border-left: 3px solid var(--blue);
+        }
+        .script-line.direction {
+            color: var(--text-dim);
+            font-style: italic;
+            font-size: 11px;
         }
 
-        input[type="text"]:focus,
-        textarea:focus,
-        select:focus {
-            outline: none;
-            border-color: #667eea;
+        /* ── CHARACTER PICKER ── */
+        .char-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 6px;
+        }
+        .char-chip {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            background: var(--surface2);
+            color: var(--text);
+            transition: all 0.15s;
+        }
+        .char-chip:hover { border-color: var(--accent); }
+        .char-chip.selected {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
         }
 
-        textarea {
-            resize: vertical;
-            min-height: 80px;
+        /* ── BACKGROUNDS ── */
+        .bg-swatches {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
         }
-
-        .bg-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .bg-button {
-            width: 100%;
+        .bg-swatch {
+            width: 40px;
             height: 40px;
-            border: none;
             border-radius: 8px;
             cursor: pointer;
-            font-weight: 600;
-            font-size: 12px;
-            transition: transform 0.2s, box-shadow 0.2s;
-            text-transform: uppercase;
+            border: 2px solid transparent;
+            transition: all 0.15s;
+        }
+        .bg-swatch:hover { transform: scale(1.1); }
+        .bg-swatch.active { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(255,77,77,0.3); }
+
+        /* ── SLIDERS ── */
+        .slider-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .slider-row label { margin: 0; min-width: 70px; }
+        .slider-row input[type="range"] { flex: 1; accent-color: var(--accent); }
+        .slider-val { font-size: 11px; color: var(--text-dim); min-width: 32px; text-align: right; }
+
+        /* ── PREVIEW AREA ── */
+        .preview-area {
+            display: flex;
+            flex-direction: column;
+            position: relative;
         }
 
-        .bg-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        .preview-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
         }
 
-        .bg-button.active {
-            border: 3px solid #667eea;
-        }
-
-        .bg-dark-grey {
-            background: #424242;
-            color: white;
-        }
-
-        .bg-black {
-            background: #1a1a1a;
-            color: white;
-        }
-
-        .bg-white {
-            background: #ffffff;
-            color: #333;
-            border: 2px solid #e0e0e0;
-        }
-
-        .bg-blue {
-            background: #2196F3;
-            color: white;
-        }
-
-        .bg-wood {
-            background: linear-gradient(135deg, #8B6914 0%, #5a4009 100%);
-            color: white;
-        }
-
-        .actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 30px;
-        }
-
-        button {
-            padding: 12px 20px;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-transform: uppercase;
-        }
-
-        .btn-record {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            grid-column: 1 / -1;
-        }
-
-        .btn-record:hover {
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
-            transform: translateY(-2px);
-        }
-
-        .btn-clear {
-            background: #f0f0f0;
-            color: #333;
-        }
-
-        .btn-clear:hover {
-            background: #e0e0e0;
-        }
-
-        .btn-download {
-            background: #4CAF50;
-            color: white;
-        }
-
-        .btn-download:hover {
-            background: #45a049;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                grid-template-columns: 1fr;
-            }
-
-            .preview-section {
-                padding: 20px;
-            }
-
-            .form-section {
-                padding: 20px;
-            }
-
-            .form-section h1 {
-                font-size: 24px;
-            }
-        }
-
-        .lighting-controls {
-            margin-top: 15px;
-            padding: 15px;
-            background: #f5f5f5;
-            border-radius: 8px;
-        }
-
-        .slider-group {
-            margin-bottom: 15px;
-        }
-
-        .slider-group label {
-            font-size: 12px;
-            margin-bottom: 5px;
-        }
-
-        input[type="range"] {
+        .webcam-wrapper {
+            position: relative;
             width: 100%;
-            cursor: pointer;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .value-display {
-            display: inline-block;
-            background: #667eea;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 4px;
+        #webcamVideo {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 0;
+        }
+
+        .no-webcam-msg {
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 14px;
+        }
+        .no-webcam-msg span { font-size: 40px; display: block; margin-bottom: 12px; }
+
+        /* ── TELEPROMPTER ── */
+        .teleprompter {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(10px);
+            padding: 16px 24px;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+        }
+        .teleprompter.visible { display: block; }
+        .teleprompter-line {
+            padding: 4px 0;
+            font-size: 16px;
+            line-height: 1.6;
+            transition: all 0.3s;
+        }
+        .teleprompter-line .tp-char {
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-right: 6px;
+        }
+        .teleprompter-line.tp-yours {
+            color: var(--accent);
+            font-weight: 600;
+        }
+        .teleprompter-line.tp-other { color: var(--blue); }
+        .teleprompter-line.tp-current {
+            font-size: 20px;
+            color: #fff;
+        }
+        .teleprompter-line.tp-direction {
+            color: var(--text-dim);
+            font-style: italic;
+            font-size: 13px;
+        }
+
+        /* ── PLAYBACK CONTROLS ── */
+        .controls-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+        }
+        .line-counter {
             font-size: 12px;
-            margin-left: 10px;
+            color: var(--text-dim);
+            margin-left: auto;
+        }
+
+        /* ── VOICE SELECT ── */
+        .voice-select-row {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+        .voice-select-row select { flex: 1; }
+
+        /* ── SETTINGS MODAL ── */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            width: 420px;
+            max-width: 90vw;
+        }
+        .modal h2 { font-size: 16px; margin-bottom: 16px; }
+        .modal .form-group:last-of-type { margin-bottom: 16px; }
+        .modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
+
+        /* ── STATUS ── */
+        .status-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .status-dot.red { background: var(--accent); }
+        .status-dot.green { background: var(--green); }
+
+        /* ── SPEAKING INDICATOR ── */
+        .speaking-indicator {
+            display: none;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: rgba(74,158,255,0.15);
+            border-radius: 6px;
+            font-size: 12px;
+            color: var(--blue);
+        }
+        .speaking-indicator.active { display: inline-flex; }
+        .speaking-indicator .wave {
+            display: flex; gap: 2px; align-items: center;
+        }
+        .speaking-indicator .wave span {
+            width: 3px;
+            background: var(--blue);
+            border-radius: 2px;
+            animation: wave 0.6s ease-in-out infinite;
+        }
+        .speaking-indicator .wave span:nth-child(2) { animation-delay: 0.1s; }
+        .speaking-indicator .wave span:nth-child(3) { animation-delay: 0.2s; }
+        .speaking-indicator .wave span:nth-child(4) { animation-delay: 0.3s; }
+
+        @keyframes wave {
+            0%, 100% { height: 8px; }
+            50% { height: 16px; }
+        }
+
+        /* ── RECORDING INDICATOR ── */
+        .rec-badge {
+            display: none;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent);
+        }
+        .rec-badge.active { display: inline-flex; }
+        .rec-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--accent);
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* ── SCROLLBAR ── */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 768px) {
+            .main { grid-template-columns: 1fr; }
+            .sidebar { max-height: 40vh; overflow-y: auto; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Preview Section -->
-        <div class="preview-section">
-            <div class="preview-box">
-                <div class="bg-color" id="bgColor"></div>
-                <div class="preview-content">
-                    <h3 id="characterDisplay">Character Name</h3>
-                    <p id="lineDisplay">Your audition line will appear here...</p>
+
+<!-- ═══════════════ HEADER ═══════════════ -->
+<div class="header">
+    <h1>🪱 <span>Tapeworm</span> Audition Assistant</h1>
+    <div class="header-actions">
+        <div class="rec-badge" id="recBadge"><span class="rec-dot"></span> REC</div>
+        <div class="speaking-indicator" id="speakingIndicator">
+            <div class="wave"><span></span><span></span><span></span><span></span></div>
+            Speaking...
+        </div>
+        <button class="btn" onclick="openSettings()">⚙️ Settings</button>
+    </div>
+</div>
+
+<!-- ═══════════════ MAIN LAYOUT ═══════════════ -->
+<div class="main">
+
+    <!-- ═══════ SIDEBAR ═══════ -->
+    <div class="sidebar">
+        <div class="tabs">
+            <div class="tab active" data-tab="script">📄 Script</div>
+            <div class="tab" data-tab="scene">🎬 Scene</div>
+            <div class="tab" data-tab="voice">🎙️ Voice</div>
+        </div>
+
+        <!-- ── SCRIPT TAB ── -->
+        <div class="tab-content active" id="tab-script">
+            <div class="sidebar-section">
+                <h3>Upload Script</h3>
+                <div class="upload-zone" id="uploadZone">
+                    <input type="file" id="scriptFile" accept=".txt,.pdf,.fdx,.fountain">
+                    📄 Drop script here<br><small>TXT, PDF, FDX, Fountain</small>
+                </div>
+                <div style="margin-top:8px; text-align:center; color:var(--text-dim); font-size:11px;">— or —</div>
+                <div class="form-group" style="margin-top:8px;">
+                    <label>Paste script text</label>
+                    <textarea id="scriptText" rows="6" placeholder="CHARACTER NAME&#10;Dialogue goes here...&#10;&#10;OTHER CHARACTER&#10;Their line..."></textarea>
+                    <button class="btn btn-sm" style="margin-top:6px; width:100%;" onclick="parseScriptFromText()">Parse Script</button>
+                </div>
+            </div>
+
+            <div class="sidebar-section" id="charPickerSection" style="display:none;">
+                <h3>Your Character</h3>
+                <div class="char-chips" id="charChips"></div>
+            </div>
+
+            <div class="sidebar-section" id="scriptLinesSection" style="display:none;">
+                <h3>Script Lines</h3>
+                <div class="script-display" id="scriptDisplay"></div>
+            </div>
+        </div>
+
+        <!-- ── SCENE TAB ── -->
+        <div class="tab-content" id="tab-scene">
+            <div class="sidebar-section">
+                <h3>Background</h3>
+                <div class="bg-swatches" id="bgSwatches">
+                    <div class="bg-swatch active" data-color="#424242" style="background:#424242;" title="Dark Grey"></div>
+                    <div class="bg-swatch" data-color="#000000" style="background:#000;border:1px solid #333;" title="Black"></div>
+                    <div class="bg-swatch" data-color="#ffffff" style="background:#fff;" title="White"></div>
+                    <div class="bg-swatch" data-color="#1a3a5c" style="background:#1a3a5c;" title="Blue"></div>
+                    <div class="bg-swatch" data-color="#2d2d2d" style="background:linear-gradient(135deg,#2d2d2d,#1a1a1a);" title="Gradient"></div>
+                </div>
+            </div>
+            <div class="sidebar-section">
+                <h3>Lighting</h3>
+                <div class="slider-row">
+                    <label>Brightness</label>
+                    <input type="range" id="brightness" min="50" max="150" value="100">
+                    <span class="slider-val" id="brightnessVal">100%</span>
+                </div>
+                <div class="slider-row">
+                    <label>Contrast</label>
+                    <input type="range" id="contrast" min="50" max="150" value="100">
+                    <span class="slider-val" id="contrastVal">100%</span>
+                </div>
+                <div class="slider-row">
+                    <label>Saturation</label>
+                    <input type="range" id="saturation" min="0" max="200" value="100">
+                    <span class="slider-val" id="saturationVal">100%</span>
+                </div>
+            </div>
+            <div class="sidebar-section">
+                <h3>Webcam</h3>
+                <button class="btn" id="webcamBtn" onclick="toggleWebcam()" style="width:100%;">📷 Start Webcam</button>
+                <div class="form-group" style="margin-top:8px;">
+                    <label>Camera</label>
+                    <select id="cameraSelect"><option>Default</option></select>
                 </div>
             </div>
         </div>
 
-        <!-- Form Section -->
-        <div class="form-section">
-            <h1>Tapeworm</h1>
-            <p>Prepare your audition with confidence</p>
-
-            <div class="form-group">
-                <label for="characterName">Character Name *</label>
-                <input type="text" id="characterName" placeholder="e.g., John Doe" required>
-            </div>
-
-            <div class="form-group">
-                <label for="scriptLine">Script Line *</label>
-                <textarea id="scriptLine" placeholder="Paste your audition line here..." required></textarea>
-            </div>
-
-            <div class="form-group">
-                <label>Background Color *</label>
-                <div class="bg-buttons">
-                    <button class="bg-button bg-dark-grey" onclick="setBackground('#424242')">Dark Grey</button>
-                    <button class="bg-button bg-black" onclick="setBackground('#1a1a1a')">Black</button>
-                    <button class="bg-button bg-white" onclick="setBackground('#ffffff')">White</button>
-                    <button class="bg-button bg-blue" onclick="setBackground('#2196F3')">Blue</button>
-                    <button class="bg-button bg-wood" onclick="setBackground('linear-gradient(135deg, #8B6914 0%, #5a4009 100%)')">Wood</button>
+        <!-- ── VOICE TAB ── -->
+        <div class="tab-content" id="tab-voice">
+            <div class="sidebar-section">
+                <h3>ElevenLabs TTS</h3>
+                <div id="voiceStatus" style="font-size:12px; margin-bottom:8px;">
+                    <span class="status-dot red"></span> Not connected — <a href="#" onclick="openSettings()" style="color:var(--accent);">add API key</a>
                 </div>
-            </div>
-
-            <div class="form-group">
-                <label>Lighting & Adjustments</label>
-                <div class="lighting-controls">
-                    <div class="slider-group">
-                        <label for="brightness">Brightness: <span class="value-display" id="brightnessValue">100%</span></label>
-                        <input type="range" id="brightness" min="50" max="150" value="100" onchange="updateLighting()">
-                    </div>
-                    <div class="slider-group">
-                        <label for="contrast">Contrast: <span class="value-display" id="contrastValue">100%</span></label>
-                        <input type="range" id="contrast" min="50" max="150" value="100" onchange="updateLighting()">
+                <div class="form-group">
+                    <label>Voice for opposite lines</label>
+                    <div class="voice-select-row">
+                        <select id="voiceSelect"><option value="">— load voices —</option></select>
+                        <button class="btn btn-sm" onclick="loadVoices()">🔄</button>
                     </div>
                 </div>
-            </div>
-
-            <div class="actions">
-                <button class="btn-clear" onclick="clearForm()">Clear</button>
-                <button class="btn-download" onclick="downloadSetup()">Save</button>
-                <button class="btn-record" onclick="startRecording()">🎥 Record Audition</button>
+                <div class="form-group">
+                    <label>Speed</label>
+                    <div class="slider-row">
+                        <input type="range" id="voiceSpeed" min="0.5" max="2.0" step="0.1" value="1.0">
+                        <span class="slider-val" id="voiceSpeedVal">1.0x</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Stability</label>
+                    <div class="slider-row">
+                        <input type="range" id="voiceStability" min="0" max="1" step="0.05" value="0.5">
+                        <span class="slider-val" id="voiceStabilityVal">0.50</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Pause between lines (sec)</label>
+                    <div class="slider-row">
+                        <input type="range" id="pauseDuration" min="0.5" max="5" step="0.5" value="2">
+                        <span class="slider-val" id="pauseDurationVal">2.0s</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <script>
-        let mediaRecorder;
-        let recordedChunks = [];
-        let selectedBgColor = '#424242';
+    <!-- ═══════ PREVIEW ═══════ -->
+    <div class="preview-area">
+        <div class="preview-container" id="previewContainer" style="background:#424242;">
+            <div class="webcam-wrapper" id="webcamWrapper">
+                <div class="no-webcam-msg" id="noWebcamMsg">
+                    <span>🎬</span>
+                    Start your webcam to see yourself<br>
+                    <small style="color:var(--text-dim);">Go to Scene tab → Start Webcam</small>
+                </div>
+                <video id="webcamVideo" autoplay muted playsinline style="display:none;"></video>
+            </div>
+            <div class="teleprompter" id="teleprompter"></div>
+        </div>
 
-        function updatePreview() {
-            const charName = document.getElementById('characterName').value || 'Character Name';
-            const line = document.getElementById('scriptLine').value || 'Your audition line will appear here...';
-            
-            document.getElementById('characterDisplay').textContent = charName;
-            document.getElementById('lineDisplay').textContent = line;
-        }
+        <!-- ── CONTROLS BAR ── -->
+        <div class="controls-bar">
+            <button class="btn" id="playBtn" onclick="startRun()" disabled title="Run through script">▶️ Run Lines</button>
+            <button class="btn" id="stopBtn" onclick="stopRun()" style="display:none;">⏹ Stop</button>
+            <button class="btn" id="nextBtn" onclick="nextLine()" style="display:none;">⏭ Next</button>
+            <button class="btn" id="recordBtn" onclick="toggleRecording()">🔴 Record</button>
+            <button class="btn" onclick="toggleTeleprompter()">📺 Teleprompter</button>
+            <span class="line-counter" id="lineCounter"></span>
+        </div>
+    </div>
+</div>
 
-        function setBackground(color) {
-            selectedBgColor = color;
-            document.getElementById('bgColor').style.background = color;
-            
-            // Update button states
-            document.querySelectorAll('.bg-button').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-        }
+<!-- ═══════════════ SETTINGS MODAL ═══════════════ -->
+<div class="modal-overlay" id="settingsModal">
+    <div class="modal">
+        <h2>⚙️ Settings</h2>
+        <div class="form-group">
+            <label>ElevenLabs API Key</label>
+            <input type="password" id="apiKeyInput" placeholder="Enter your ElevenLabs API key">
+            <small style="color:var(--text-dim); font-size:11px; margin-top:4px; display:block;">
+                Get yours at <a href="https://elevenlabs.io/app/settings/api-keys" target="_blank" style="color:var(--blue);">elevenlabs.io/settings/api-keys</a>
+            </small>
+        </div>
+        <div class="modal-actions">
+            <button class="btn" onclick="closeSettings()">Cancel</button>
+            <button class="btn btn-accent" onclick="saveSettings()">Save</button>
+        </div>
+    </div>
+</div>
 
-        function updateLighting() {
-            const brightness = document.getElementById('brightness').value;
-            const contrast = document.getElementById('contrast').value;
-            
-            document.getElementById('brightnessValue').textContent = brightness + '%';
-            document.getElementById('contrastValue').textContent = contrast + '%';
-            
-            const bgColor = document.getElementById('bgColor');
-            bgColor.style.filter = `brightness(${brightness}%) contrast(${contrast}%)`;
-        }
+<script>
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+let state = {
+    apiKey: localStorage.getItem('elevenlabs_api_key') || '',
+    scriptLines: [],       // [{character, text, isDirection}]
+    characters: [],
+    myCharacter: '',
+    selectedVoice: '',
+    webcamOn: false,
+    webcamStream: null,
+    isRunning: false,
+    currentLineIdx: 0,
+    isRecording: false,
+    mediaRecorder: null,
+    recordedChunks: [],
+    bgColor: '#424242',
+    currentAudio: null
+};
 
-        function clearForm() {
-            document.getElementById('characterName').value = '';
-            document.getElementById('scriptLine').value = '';
-            document.getElementById('brightness').value = 100;
-            document.getElementById('contrast').value = 100;
-            selectedBgColor = '#424242';
-            document.getElementById('bgColor').style.background = selectedBgColor;
-            document.getElementById('bgColor').style.filter = 'none';
-            updatePreview();
-        }
+// ═══════════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════════
+document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+    });
+});
 
-        function downloadSetup() {
-            const charName = document.getElementById('characterName').value;
-            const line = document.getElementById('scriptLine').value;
-            const brightness = document.getElementById('brightness').value;
-            const contrast = document.getElementById('contrast').value;
+// ═══════════════════════════════════════════════
+// SETTINGS
+// ═══════════════════════════════════════════════
+function openSettings() {
+    document.getElementById('apiKeyInput').value = state.apiKey;
+    document.getElementById('settingsModal').classList.add('open');
+}
+function closeSettings() {
+    document.getElementById('settingsModal').classList.remove('open');
+}
+function saveSettings() {
+    state.apiKey = document.getElementById('apiKeyInput').value.trim();
+    localStorage.setItem('elevenlabs_api_key', state.apiKey);
+    closeSettings();
+    updateVoiceStatus();
+    if (state.apiKey) loadVoices();
+}
+function updateVoiceStatus() {
+    const el = document.getElementById('voiceStatus');
+    if (state.apiKey) {
+        el.innerHTML = '<span class="status-dot green"></span> Connected';
+    } else {
+        el.innerHTML = '<span class="status-dot red"></span> Not connected — <a href="#" onclick="openSettings()" style="color:var(--accent);">add API key</a>';
+    }
+}
 
-            if (!charName || !line) {
-                alert('Please fill in character name and script line');
-                return;
+// ═══════════════════════════════════════════════
+// SCRIPT PARSING
+// ═══════════════════════════════════════════════
+
+// Standard screenplay format: CHARACTER NAME in ALL CAPS on its own line, dialogue below
+function parseScript(text) {
+    const lines = text.split('\n');
+    const parsed = [];
+    let currentChar = '';
+    let buffer = '';
+
+    // Detect character names: all-caps lines (possibly with (V.O.), (O.S.), etc.)
+    const charPattern = /^([A-Z][A-Z\s.''-]{1,40})(\s*\(.*\))?\s*$/;
+    // Stage directions in parentheses
+    const directionPattern = /^\s*\(.*\)\s*$/;
+
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) {
+            if (currentChar && buffer.trim()) {
+                parsed.push({ character: currentChar, text: buffer.trim(), isDirection: false });
+                buffer = '';
             }
+            currentChar = '';
+            continue;
+        }
 
-            const setup = {
-                character: charName,
-                line: line,
-                backgroundColor: selectedBgColor,
-                brightness: brightness,
-                contrast: contrast,
-                timestamp: new Date().toLocaleString()
+        if (directionPattern.test(line)) {
+            if (currentChar && buffer.trim()) {
+                parsed.push({ character: currentChar, text: buffer.trim(), isDirection: false });
+                buffer = '';
+            }
+            parsed.push({ character: '', text: line, isDirection: true });
+            continue;
+        }
+
+        const match = line.match(charPattern);
+        if (match && line.length < 35 && !line.includes('  ')) {
+            if (currentChar && buffer.trim()) {
+                parsed.push({ character: currentChar, text: buffer.trim(), isDirection: false });
+                buffer = '';
+            }
+            currentChar = match[1].trim();
+        } else if (currentChar) {
+            buffer += (buffer ? ' ' : '') + line;
+        } else {
+            // Fallback: try "CHARACTER: dialogue" format
+            const colonMatch = line.match(/^([A-Z][A-Za-z\s.''-]+):\s*(.+)/);
+            if (colonMatch) {
+                if (currentChar && buffer.trim()) {
+                    parsed.push({ character: currentChar, text: buffer.trim(), isDirection: false });
+                }
+                currentChar = colonMatch[1].trim().toUpperCase();
+                buffer = colonMatch[2].trim();
+                parsed.push({ character: currentChar, text: buffer, isDirection: false });
+                currentChar = '';
+                buffer = '';
+            }
+        }
+    }
+    if (currentChar && buffer.trim()) {
+        parsed.push({ character: currentChar, text: buffer.trim(), isDirection: false });
+    }
+
+    return parsed;
+}
+
+function parseScriptFromText() {
+    const text = document.getElementById('scriptText').value;
+    if (!text.trim()) return;
+    processScript(text);
+}
+
+function processScript(text) {
+    state.scriptLines = parseScript(text);
+    if (state.scriptLines.length === 0) {
+        alert('Could not parse any lines. Use format:\n\nCHARACTER NAME\nDialogue here...\n\nOTHER CHARACTER\nTheir line...');
+        return;
+    }
+
+    // Extract unique characters
+    state.characters = [...new Set(
+        state.scriptLines.filter(l => !l.isDirection).map(l => l.character)
+    )];
+
+    // Show character picker
+    const section = document.getElementById('charPickerSection');
+    section.style.display = 'block';
+    const chips = document.getElementById('charChips');
+    chips.innerHTML = state.characters.map(c =>
+        `<div class="char-chip" onclick="selectCharacter('${c.replace(/'/g, "\\'")}')">${c}</div>`
+    ).join('');
+
+    // Show script lines
+    document.getElementById('scriptLinesSection').style.display = 'block';
+    renderScriptLines();
+
+    // Enable play button
+    document.getElementById('playBtn').disabled = false;
+}
+
+function selectCharacter(name) {
+    state.myCharacter = name;
+    document.querySelectorAll('.char-chip').forEach(chip => {
+        chip.classList.toggle('selected', chip.textContent === name);
+    });
+    renderScriptLines();
+    renderTeleprompter();
+}
+
+function renderScriptLines() {
+    const display = document.getElementById('scriptDisplay');
+    display.innerHTML = state.scriptLines.map((line, i) => {
+        if (line.isDirection) {
+            return `<div class="script-line direction">${line.text}</div>`;
+        }
+        const isYours = line.character === state.myCharacter;
+        const cls = isYours ? 'your-line' : 'other-line';
+        return `<div class="script-line ${cls}">
+            <span class="char-name" style="color:${isYours ? 'var(--accent)' : 'var(--blue)'};">${line.character}</span>
+            ${line.text}
+        </div>`;
+    }).join('');
+}
+
+// ═══════════════════════════════════════════════
+// FILE UPLOAD
+// ═══════════════════════════════════════════════
+const uploadZone = document.getElementById('uploadZone');
+const scriptFile = document.getElementById('scriptFile');
+
+uploadZone.addEventListener('click', () => scriptFile.click());
+uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('dragover'); });
+uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
+uploadZone.addEventListener('drop', e => {
+    e.preventDefault();
+    uploadZone.classList.remove('dragover');
+    handleFile(e.dataTransfer.files[0]);
+});
+scriptFile.addEventListener('change', () => handleFile(scriptFile.files[0]));
+
+async function handleFile(file) {
+    if (!file) return;
+    uploadZone.innerHTML = `📄 ${file.name}`;
+
+    if (file.name.endsWith('.txt') || file.name.endsWith('.fountain')) {
+        const text = await file.text();
+        processScript(text);
+    } else if (file.name.endsWith('.pdf')) {
+        // Use pdf.js from CDN
+        if (!window.pdfjsLib) {
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+            script.onload = () => {
+                window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+                extractPDF(file);
             };
-
-            const dataStr = JSON.stringify(setup, null, 2);
-            const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
-            
-            const exportFileDefaultName = `${charName.replace(/\s+/g, '_')}_audition_setup.json`;
-            
-            const linkElement = document.createElement('a');
-            linkElement.setAttribute('href', dataUri);
-            linkElement.setAttribute('download', exportFileDefaultName);
-            linkElement.click();
+            document.head.appendChild(script);
+        } else {
+            extractPDF(file);
         }
+    } else if (file.name.endsWith('.fdx')) {
+        const text = await file.text();
+        // Parse Final Draft XML
+        const parser = new DOMParser();
+        const xml = parser.parseFromString(text, 'text/xml');
+        const paragraphs = xml.querySelectorAll('Paragraph');
+        let scriptText = '';
+        paragraphs.forEach(p => {
+            const type = p.getAttribute('Type');
+            const content = Array.from(p.querySelectorAll('Text')).map(t => t.textContent).join('');
+            if (type === 'Character') scriptText += '\n' + content + '\n';
+            else if (type === 'Dialogue') scriptText += content + '\n';
+            else if (type === 'Parenthetical') scriptText += content + '\n';
+            else if (type === 'Action') scriptText += '\n(' + content + ')\n';
+        });
+        processScript(scriptText);
+    }
+}
 
-        async function startRecording() {
-            try {
-                const canvas = document.querySelector('.preview-box');
-                const stream = await navigator.mediaDevices.getDisplayMedia({
-                    video: { mediaSource: 'screen' },
-                    audio: true
-                });
+async function extractPDF(file) {
+    const arrayBuf = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuf }).promise;
+    let fullText = '';
+    for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const content = await page.getTextContent();
+        fullText += content.items.map(item => item.str).join('\n') + '\n';
+    }
+    processScript(fullText);
+}
 
-                mediaRecorder = new MediaRecorder(stream);
-                recordedChunks = [];
+// ═══════════════════════════════════════════════
+// ELEVENLABS TTS
+// ═══════════════════════════════════════════════
+async function loadVoices() {
+    if (!state.apiKey) { openSettings(); return; }
+    const sel = document.getElementById('voiceSelect');
+    sel.innerHTML = '<option value="">Loading...</option>';
+    try {
+        const res = await fetch('https://api.elevenlabs.io/v1/voices', {
+            headers: { 'xi-api-key': state.apiKey }
+        });
+        if (!res.ok) throw new Error('Invalid API key or request failed');
+        const data = await res.json();
+        sel.innerHTML = '<option value="">— Select a voice —</option>' +
+            data.voices.map(v => `<option value="${v.voice_id}">${v.name}</option>`).join('');
+        updateVoiceStatus();
+    } catch (e) {
+        sel.innerHTML = '<option value="">Error loading voices</option>';
+        console.error(e);
+    }
+}
 
-                mediaRecorder.ondataavailable = (event) => {
-                    if (event.data.size > 0) {
-                        recordedChunks.push(event.data);
-                    }
-                };
+async function speakLine(text) {
+    const voiceId = document.getElementById('voiceSelect').value;
+    if (!voiceId || !state.apiKey) return;
 
-                mediaRecorder.onstop = () => {
-                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `${document.getElementById('characterName').value || 'audition'}_${Date.now()}.webm`;
-                    a.click();
-                };
+    document.getElementById('speakingIndicator').classList.add('active');
 
-                mediaRecorder.start();
-                alert('Recording started! Click OK to stop recording.');
-                
-                stream.getTracks().forEach(track => {
-                    track.onended = () => {
-                        mediaRecorder.stop();
-                    };
-                });
+    try {
+        const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+            method: 'POST',
+            headers: {
+                'xi-api-key': state.apiKey,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                text: text,
+                model_id: 'eleven_monolingual_v1',
+                voice_settings: {
+                    stability: parseFloat(document.getElementById('voiceStability').value),
+                    similarity_boost: 0.75,
+                    speed: parseFloat(document.getElementById('voiceSpeed').value)
+                }
+            })
+        });
 
-            } catch (err) {
-                console.error('Error accessing media:', err);
-                alert('Unable to start recording. Please check your permissions.');
+        if (!res.ok) throw new Error('TTS failed');
+
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+
+        return new Promise((resolve) => {
+            const audio = new Audio(url);
+            state.currentAudio = audio;
+            audio.onended = () => {
+                document.getElementById('speakingIndicator').classList.remove('active');
+                URL.revokeObjectURL(url);
+                state.currentAudio = null;
+                resolve();
+            };
+            audio.onerror = () => {
+                document.getElementById('speakingIndicator').classList.remove('active');
+                state.currentAudio = null;
+                resolve();
+            };
+            audio.play();
+        });
+    } catch (e) {
+        console.error('TTS error:', e);
+        document.getElementById('speakingIndicator').classList.remove('active');
+    }
+}
+
+// ═══════════════════════════════════════════════
+// LINE RUNNER
+// ═══════════════════════════════════════════════
+async function startRun() {
+    if (state.scriptLines.length === 0) return;
+    if (!state.myCharacter) {
+        alert('Select your character first!');
+        return;
+    }
+
+    state.isRunning = true;
+    state.currentLineIdx = 0;
+    document.getElementById('playBtn').style.display = 'none';
+    document.getElementById('stopBtn').style.display = '';
+    document.getElementById('nextBtn').style.display = '';
+
+    // Show teleprompter
+    const tp = document.getElementById('teleprompter');
+    tp.classList.add('visible');
+    renderTeleprompter();
+
+    await runNextLine();
+}
+
+async function runNextLine() {
+    if (!state.isRunning || state.currentLineIdx >= state.scriptLines.length) {
+        stopRun();
+        return;
+    }
+
+    const line = state.scriptLines[state.currentLineIdx];
+    updateTeleprompterHighlight();
+    updateLineCounter();
+
+    if (line.isDirection) {
+        // Pause briefly for stage directions
+        await sleep(1500);
+        state.currentLineIdx++;
+        await runNextLine();
+    } else if (line.character === state.myCharacter) {
+        // YOUR line — wait for user to click Next
+        // (teleprompter highlights it in red)
+    } else {
+        // OTHER character — TTS reads it
+        const voiceId = document.getElementById('voiceSelect').value;
+        if (voiceId && state.apiKey) {
+            await speakLine(line.text);
+        }
+        const pause = parseFloat(document.getElementById('pauseDuration').value) * 1000;
+        await sleep(pause);
+
+        // If next line is ours, stop and wait. Otherwise auto-advance.
+        state.currentLineIdx++;
+        if (state.currentLineIdx < state.scriptLines.length) {
+            const next = state.scriptLines[state.currentLineIdx];
+            if (next.character === state.myCharacter) {
+                updateTeleprompterHighlight();
+                updateLineCounter();
+                // Wait for user to say their line and click Next
+            } else {
+                await runNextLine();
             }
+        } else {
+            stopRun();
         }
+    }
+}
 
-        // Update preview on input change
-        document.getElementById('characterName').addEventListener('input', updatePreview);
-        document.getElementById('scriptLine').addEventListener('input', updatePreview);
+function nextLine() {
+    if (!state.isRunning) return;
+    state.currentLineIdx++;
+    runNextLine();
+}
 
-        // Set initial background
-        setBackground('#424242');
-        updatePreview();
-    </script>
+function stopRun() {
+    state.isRunning = false;
+    if (state.currentAudio) {
+        state.currentAudio.pause();
+        state.currentAudio = null;
+    }
+    document.getElementById('speakingIndicator').classList.remove('active');
+    document.getElementById('playBtn').style.display = '';
+    document.getElementById('stopBtn').style.display = 'none';
+    document.getElementById('nextBtn').style.display = 'none';
+    document.getElementById('lineCounter').textContent = '';
+}
+
+function updateLineCounter() {
+    const total = state.scriptLines.length;
+    const current = state.currentLineIdx + 1;
+    document.getElementById('lineCounter').textContent = `Line ${current} / ${total}`;
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ═══════════════════════════════════════════════
+// TELEPROMPTER
+// ═══════════════════════════════════════════════
+function toggleTeleprompter() {
+    const tp = document.getElementById('teleprompter');
+    tp.classList.toggle('visible');
+    if (tp.classList.contains('visible')) renderTeleprompter();
+}
+
+function renderTeleprompter() {
+    const tp = document.getElementById('teleprompter');
+    tp.innerHTML = state.scriptLines.map((line, i) => {
+        if (line.isDirection) {
+            return `<div class="teleprompter-line tp-direction" data-idx="${i}">${line.text}</div>`;
+        }
+        const isYours = line.character === state.myCharacter;
+        const cls = isYours ? 'tp-yours' : 'tp-other';
+        return `<div class="teleprompter-line ${cls}" data-idx="${i}">
+            <span class="tp-char">${line.character}:</span> ${line.text}
+        </div>`;
+    }).join('');
+}
+
+function updateTeleprompterHighlight() {
+    document.querySelectorAll('.teleprompter-line').forEach(el => {
+        el.classList.remove('tp-current');
+        if (parseInt(el.dataset.idx) === state.currentLineIdx) {
+            el.classList.add('tp-current');
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    });
+}
+
+// ═══════════════════════════════════════════════
+// BACKGROUNDS & LIGHTING
+// ═══════════════════════════════════════════════
+document.querySelectorAll('.bg-swatch').forEach(swatch => {
+    swatch.addEventListener('click', () => {
+        document.querySelectorAll('.bg-swatch').forEach(s => s.classList.remove('active'));
+        swatch.classList.add('active');
+        state.bgColor = swatch.dataset.color;
+        document.getElementById('previewContainer').style.background = state.bgColor;
+    });
+});
+
+// Lighting sliders
+['brightness', 'contrast', 'saturation'].forEach(prop => {
+    const slider = document.getElementById(prop);
+    const val = document.getElementById(prop + 'Val');
+    slider.addEventListener('input', () => {
+        val.textContent = slider.value + '%';
+        applyFilters();
+    });
+});
+
+function applyFilters() {
+    const b = document.getElementById('brightness').value;
+    const c = document.getElementById('contrast').value;
+    const s = document.getElementById('saturation').value;
+    document.getElementById('webcamVideo').style.filter =
+        `brightness(${b}%) contrast(${c}%) saturate(${s}%)`;
+}
+
+// Voice sliders
+document.getElementById('voiceSpeed').addEventListener('input', function() {
+    document.getElementById('voiceSpeedVal').textContent = parseFloat(this.value).toFixed(1) + 'x';
+});
+document.getElementById('voiceStability').addEventListener('input', function() {
+    document.getElementById('voiceStabilityVal').textContent = parseFloat(this.value).toFixed(2);
+});
+document.getElementById('pauseDuration').addEventListener('input', function() {
+    document.getElementById('pauseDurationVal').textContent = parseFloat(this.value).toFixed(1) + 's';
+});
+
+// ═══════════════════════════════════════════════
+// WEBCAM
+// ═══════════════════════════════════════════════
+async function toggleWebcam() {
+    const video = document.getElementById('webcamVideo');
+    const msg = document.getElementById('noWebcamMsg');
+    const btn = document.getElementById('webcamBtn');
+
+    if (state.webcamOn) {
+        // Stop
+        state.webcamStream.getTracks().forEach(t => t.stop());
+        video.srcObject = null;
+        video.style.display = 'none';
+        msg.style.display = 'block';
+        state.webcamOn = false;
+        btn.textContent = '📷 Start Webcam';
+        return;
+    }
+
+    try {
+        const deviceId = document.getElementById('cameraSelect').value;
+        const constraints = {
+            video: deviceId && deviceId !== 'Default'
+                ? { deviceId: { exact: deviceId }, width: { ideal: 1920 }, height: { ideal: 1080 } }
+                : { width: { ideal: 1920 }, height: { ideal: 1080 } },
+            audio: false
+        };
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        state.webcamStream = stream;
+        video.srcObject = stream;
+        video.style.display = 'block';
+        msg.style.display = 'none';
+        state.webcamOn = true;
+        btn.textContent = '📷 Stop Webcam';
+        applyFilters();
+        loadCameraList();
+    } catch (e) {
+        console.error('Webcam error:', e);
+        alert('Could not access webcam. Check permissions.');
+    }
+}
+
+async function loadCameraList() {
+    try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const cameras = devices.filter(d => d.kind === 'videoinput');
+        const sel = document.getElementById('cameraSelect');
+        sel.innerHTML = cameras.map((c, i) =>
+            `<option value="${c.deviceId}">${c.label || 'Camera ' + (i + 1)}</option>`
+        ).join('');
+    } catch(e) {}
+}
+
+// ═══════════════════════════════════════════════
+// RECORDING (via MediaRecorder + webcam)
+// ═══════════════════════════════════════════════
+async function toggleRecording() {
+    if (state.isRecording) {
+        state.mediaRecorder.stop();
+        state.isRecording = false;
+        document.getElementById('recBadge').classList.remove('active');
+        document.getElementById('recordBtn').textContent = '🔴 Record';
+        return;
+    }
+
+    if (!state.webcamOn) {
+        alert('Start your webcam first!');
+        return;
+    }
+
+    try {
+        // Capture video from webcam + audio from mic
+        const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const combined = new MediaStream([
+            ...state.webcamStream.getVideoTracks(),
+            ...audioStream.getAudioTracks()
+        ]);
+
+        state.mediaRecorder = new MediaRecorder(combined, { mimeType: 'video/webm;codecs=vp9' });
+        state.recordedChunks = [];
+
+        state.mediaRecorder.ondataavailable = (e) => {
+            if (e.data.size > 0) state.recordedChunks.push(e.data);
+        };
+
+        state.mediaRecorder.onstop = () => {
+            const blob = new Blob(state.recordedChunks, { type: 'video/webm' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `audition_${state.myCharacter || 'take'}_${Date.now()}.webm`;
+            a.click();
+            audioStream.getTracks().forEach(t => t.stop());
+        };
+
+        state.mediaRecorder.start();
+        state.isRecording = true;
+        document.getElementById('recBadge').classList.add('active');
+        document.getElementById('recordBtn').textContent = '⏹ Stop Rec';
+
+    } catch (e) {
+        console.error('Recording error:', e);
+        alert('Could not start recording. Check mic permissions.');
+    }
+}
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+updateVoiceStatus();
+if (state.apiKey) loadVoices();
+
+// Close modal on overlay click
+document.getElementById('settingsModal').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('settingsModal')) closeSettings();
+});
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeSettings();
+    if (e.key === ' ' && state.isRunning && state.scriptLines[state.currentLineIdx]?.character === state.myCharacter) {
+        e.preventDefault();
+        nextLine();
+    }
+});
+</script>
+
 </body>
 </html>
