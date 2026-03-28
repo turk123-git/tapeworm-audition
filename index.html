@@ -270,6 +270,7 @@
             justify-content: center;
             position: relative;
             overflow: hidden;
+            transition: background-color 0.2s ease;
         }
 
         .webcam-wrapper {
@@ -587,7 +588,7 @@
 
     <!-- ═══════ PREVIEW ═══════ -->
     <div class="preview-area">
-        <div class="preview-container" id="previewContainer" style="background:#424242;">
+        <div id="previewContainer" class="preview-container" style="background:#424242;">
             <div class="webcam-wrapper" id="webcamWrapper">
                 <div class="no-webcam-msg" id="noWebcamMsg">
                     <span>🎬</span>
@@ -1113,7 +1114,10 @@ document.querySelectorAll('.bg-swatch').forEach(swatch => {
         document.querySelectorAll('.bg-swatch').forEach(s => s.classList.remove('active'));
         swatch.classList.add('active');
         state.bgColor = swatch.dataset.color;
-        document.getElementById('previewContainer').style.background = state.bgColor;
+        const previewContainer = document.getElementById('previewContainer');
+        previewContainer.style.background = state.bgColor + ' !important';
+        previewContainer.style.backgroundColor = state.bgColor;
+        console.log('Background changed to:', state.bgColor);
     });
 });
 
