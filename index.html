@@ -6,6 +6,9 @@
     <title>Tapeworm — Audition Assistant</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- MediaPipe Selfie Segmentation for virtual background -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -596,6 +599,7 @@
                     <small style="color:var(--text-dim);">Go to Scene tab → Start Webcam</small>
                 </div>
                 <video id="webcamVideo" autoplay muted playsinline style="display:none;"></video>
+                <canvas id="bgCanvas" style="display:none; width:100%; height:100%; object-fit:cover; border-radius:8px;"></canvas>
             </div>
             <div class="teleprompter" id="teleprompter"></div>
         </div>
@@ -1115,8 +1119,8 @@ document.querySelectorAll('.bg-swatch').forEach(swatch => {
         swatch.classList.add('active');
         state.bgColor = swatch.dataset.color;
         const previewContainer = document.getElementById('previewContainer');
-        previewContainer.style.background = state.bgColor + ' !important';
         previewContainer.style.backgroundColor = state.bgColor;
+        previewContainer.setAttribute('data-bg-color', state.bgColor);
         console.log('Background changed to:', state.bgColor);
     });
 });
